@@ -13,7 +13,6 @@
             --terrakotta: #D97757;
             --terrakotta-hover: #C26344;
             --waldgruen: #1B3B2B;
-            --waldgruen-light: #2C533E;
             --text-dark: #1F2A24;
             --text-muted: #5C6B61;
             --glass-bg: rgba(255, 255, 255, 0.7);
@@ -24,7 +23,7 @@
             --radius-lg: 24px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
         
         body {
             background: var(--bg-creme);
@@ -40,32 +39,19 @@
         .container { max-width: 1280px; margin: 0 auto; }
 
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            padding: 24px 32px;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--shadow-md);
-            gap: 20px; flex-wrap: wrap;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 24px; background: var(--glass-bg); backdrop-filter: blur(20px);
+            padding: 24px 32px; border-radius: var(--radius-lg); border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-md); gap: 20px; flex-wrap: wrap;
         }
 
         .brand h1 { font-size: 1.9rem; font-weight: 800; color: var(--waldgruen); }
         .brand p { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
 
         .btn {
-            background-color: var(--terrakotta);
-            color: white;
-            border: none;
-            padding: 12px 22px;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            font-size: 0.92rem;
-            cursor: pointer;
-            transition: all 0.25s ease;
+            background-color: var(--terrakotta); color: white; border: none;
+            padding: 12px 22px; border-radius: var(--radius-sm); font-weight: 700;
+            font-size: 0.92rem; cursor: pointer; transition: all 0.25s ease;
             box-shadow: 0 4px 14px rgba(217, 119, 87, 0.25);
         }
         .btn:hover { background-color: var(--terrakotta-hover); transform: translateY(-2px); }
@@ -73,23 +59,17 @@
         .btn-outline:hover { background: var(--salbei-light); transform: translateY(-2px); }
 
         .config-bar {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            padding: 16px 24px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--glass-border);
-            margin-bottom: 24px;
-            display: flex; gap: 20px; align-items: center; flex-wrap: wrap;
+            background: var(--glass-bg); backdrop-filter: blur(16px);
+            padding: 16px 24px; border-radius: var(--radius-md); border: 1px solid var(--glass-border);
+            margin-bottom: 24px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap;
         }
         .config-bar input { flex: 1; min-width: 240px; padding: 10px 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--salbei-border); }
 
         .nav-pills { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 28px; }
         .nav-pill {
-            background: var(--glass-bg);
-            border: 1.5px solid var(--salbei-border);
-            padding: 10px 20px; border-radius: 30px;
-            font-weight: 700; font-size: 0.88rem; color: var(--text-muted);
-            cursor: pointer; white-space: nowrap; transition: all 0.2s;
+            background: var(--glass-bg); border: 1.5px solid var(--salbei-border);
+            padding: 10px 20px; border-radius: 30px; font-weight: 700; font-size: 0.88rem;
+            color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: all 0.2s;
         }
         .nav-pill.active { background: var(--waldgruen); color: white; border-color: var(--waldgruen); }
 
@@ -98,23 +78,17 @@
 
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
         .card-3d {
-            background: var(--glass-bg);
-            backdrop-filter: blur(18px);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--glass-border);
-            padding: 26px; box-shadow: var(--shadow-md);
-            cursor: pointer; transition: transform 0.3s ease;
+            background: var(--glass-bg); backdrop-filter: blur(18px);
+            border-radius: var(--radius-lg); border: 1px solid var(--glass-border);
+            padding: 26px; box-shadow: var(--shadow-md); cursor: pointer; transition: transform 0.3s ease;
         }
         .card-3d:hover { transform: translateY(-6px); border-color: var(--terrakotta); }
         .card-header { display: flex; justify-content: space-between; border-bottom: 1.5px solid var(--salbei-border); padding-bottom: 12px; margin-bottom: 16px; }
 
         .detail-meal-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(18px);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--glass-border);
-            padding: 28px; margin-bottom: 24px;
-            display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+            background: var(--glass-bg); backdrop-filter: blur(18px);
+            border-radius: var(--radius-lg); border: 1px solid var(--glass-border);
+            padding: 28px; margin-bottom: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
         }
         @media(max-width: 800px) { .detail-meal-card { grid-template-columns: 1fr; } }
 
@@ -122,8 +96,7 @@
         .loading-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(253, 251, 247, 0.85); backdrop-filter: blur(12px);
-            display: none; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999;
+            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;
         }
         .spinner {
             width: 50px; height: 50px; border: 5px solid var(--salbei-medium);
@@ -135,15 +108,17 @@
         .macro-badge { background: white; border: 1px solid var(--salbei-border); padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; color: var(--waldgruen); }
         .fav-btn { background: var(--salbei-medium); color: var(--waldgruen); border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; float: right; }
         .fav-btn:hover { background: var(--terrakotta); color: white; }
+        
+        .checklist { list-style: none; margin-top: 10px; }
+        .checklist-item { padding: 6px 0; border-bottom: 1px dashed var(--salbei-border); font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-<!-- LOADING SCREEN -->
 <div class="loading-overlay" id="loadingScreen">
     <div class="spinner"></div>
     <h2 style="color: var(--waldgruen);">✨ KI generiert euren Wochenplan...</h2>
-    <p style="color: var(--text-muted); margin-top: 8px;">Berücksichtigt Bioverfügbarkeit, Meal Prep & Vorratskammer (ohne rohe Tomaten)</p>
+    <p style="color: var(--text-muted); margin-top: 8px;">Berücksichtigt Bioverfügbarkeit, Meal Prep & Geräte (ohne rohe Tomaten)</p>
 </div>
 
 <div class="container">
@@ -180,7 +155,7 @@
 
     <div id="page-dashboard" class="page active"><div class="dashboard-grid" id="dashboardGrid"></div></div>
     <div id="dayPagesContainer"></div>
-    <div id="page-Einkaufsliste" class="page"><h3 style="color: var(--waldgruen); margin-bottom: 16px;">🛒 Einkaufsliste</h3><ul id="shoppingListUl"></ul></div>
+    <div id="page-Einkaufsliste" class="page"><h3 style="color: var(--waldgruen); margin-bottom: 16px;">🛒 Konsolidierte Einkaufsliste</h3><ul id="shoppingListUl" style="list-style:none;"></ul></div>
     <div id="page-Favoriten" class="page"><h3 style="color: var(--waldgruen); margin-bottom: 16px;">⭐ Gespeicherte Lieblingsrezepte</h3><div id="favoritesContainer"></div></div>
 </div>
 
@@ -188,12 +163,38 @@
     const DAYS = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
     const MEAL_TYPES = ["Frühstück", "Mittagessen", "Abendessen", "Snack"];
 
-    let currentPlan = JSON.parse(localStorage.getItem('nutri_current_plan')) || {};
+    const OFFLINE_POOL = {
+        "Frühstück": [
+            { name: "Vitamin-C Chia-Pudding mit Mango", device: "Kühlschrank", bio: "Zitrus-Vitamin C steigert die Eisenaufnahme aus Chia & Hanfsamen.", calories: 380, protein: 16, ingredients: [{item: "Chiasamen", amount: 60, unit: "g"}, {item: "Pflanzenmilch", amount: 400, unit: "ml"}, {item: "Mango", amount: 1, unit: "Stück"}], instructions: "Chiasamen mit Pflanzenmilch quellen lassen und mit reifer Mango garnieren." },
+            { name: "Golden-Milk Oats mit Kürbiskernen", device: "Herd", bio: "Curcumin-Absorption + Eisenboost (Kurkuma + Pfeffer).", calories: 420, protein: 18, ingredients: [{item: "Haferflocken", amount: 160, unit: "g"}, {item: "Pflanzenmilch", amount: 400, unit: "ml"}, {item: "Kürbiskerne", amount: 40, unit: "g"}], instructions: "Haferflocken mit Kurkuma erwärmen und Kürbiskerne drübergeben." }
+        ],
+        "Mittagessen": [
+            { name: "Airfryer Tofu-Katsu Bowl", device: "Airfryer & Herd", bio: "Eisen + Vitamin C Kombination.", calories: 580, protein: 32, ingredients: [{item: "Naturtofu", amount: 400, unit: "g"}, {item: "Sushi-Reis", amount: 200, unit: "g"}, {item: "Brokkoli", amount: 1, unit: "Kopf"}], instructions: "Tofu panieren, im Airfryer 12 Min kross backen und mit Reis servieren." },
+            { name: "Linsensalat mit Ofen-Süßkartoffeln", device: "Airfryer & Herd", bio: "Pro-Vitamin A + Ballaststoffe.", calories: 510, protein: 24, ingredients: [{item: "Braune Linsen", amount: 200, unit: "g"}, {item: "Süßkartoffeln", amount: 2, unit: "Stück"}], instructions: "Süßkartoffeln im Airfryer rösten und mit den gekochten Linsen vermengen." }
+        ],
+        "Abendessen": [
+            { name: "Cremiges Dal Makhani & Ofen-Blumenkohl", device: "Herd & Backofen", bio: "Zink + Phytase-Aktivierung.", calories: 540, protein: 26, ingredients: [{item: "Schwarze Linsen", amount: 350, unit: "g"}, {item: "Kokosmilch", amount: 400, unit: "ml"}], instructions: "Linsen weichkochen, mit Gewürzen einkochen und mit Blumenkohl servieren." },
+            { name: "Airfryer Tempeh-Tacos mit Mango-Salsa", device: "Airfryer", bio: "Fermentiertes Tempeh B-Vitamine + Fette.", calories: 520, protein: 28, ingredients: [{item: "Tempeh", amount: 300, unit: "g"}, {item: "Mais-Tacos", amount: 8, unit: "Stück"}], instructions: "Tempeh würfeln, im Airfryer kross backen und Tacos befüllen." }
+        ],
+        "Snack": [
+            { name: "Airfryer Grünkohlchips & Ingwer-Shot", device: "Airfryer & Entsafter", bio: "Vitamin K + Enzym-Aktivierung.", calories: 180, protein: 8, ingredients: [{item: "Grünkohl", amount: 200, unit: "g"}, {item: "Ingwer", amount: 100, unit: "g"}], instructions: "Grünkohl im Airfryer knusprig rösten. Ingwer entsaften." }
+        ]
+    };
+
+    let currentPlan = {};
     let favorites = JSON.parse(localStorage.getItem('nutri_favs')) || [];
 
     function init() {
         document.getElementById('apiKeyInput').value = localStorage.getItem('nutri_gemini_key') || '';
-        if (Object.keys(currentPlan).length === 0) generateFallbackPlan();
+        
+        // Erstes Laden der lokalen Speicherdaten
+        let saved = localStorage.getItem('nutri_current_plan');
+        if (saved) {
+            try { currentPlan = JSON.parse(saved); } catch(e) { generateFallbackPlan(); }
+        } else {
+            generateFallbackPlan();
+        }
+
         renderDashboard();
         renderPages();
         renderShoppingList();
@@ -206,12 +207,8 @@
         DAYS.forEach(day => {
             currentPlan[day] = {};
             MEAL_TYPES.forEach(type => {
-                currentPlan[day][type] = {
-                    name: `${type} am ${day}`, device: "Airfryer / Herd", bio: "Hohe Eisen- & Vitamin-C Synergie",
-                    calories: 450, protein: 22, carbs: 55, fat: 14,
-                    ingredients: [{item: "Beispielzutat", amount: 100, unit: "g"}],
-                    instructions: "Frisch zubereiten und genießen."
-                };
+                let pool = OFFLINE_POOL[type];
+                currentPlan[day][type] = pool[Math.floor(Math.random() * pool.length)];
             });
         });
         localStorage.setItem('nutri_current_plan', JSON.stringify(currentPlan));
@@ -221,7 +218,7 @@
         const grid = document.getElementById('dashboardGrid'); grid.innerHTML = '';
         DAYS.forEach(day => {
             const card = document.createElement('div'); card.className = 'card-3d'; card.onclick = () => showPage(day);
-            let previews = MEAL_TYPES.map(t => `<div style="margin-bottom:6px;"><b>${t}:</b> ${currentPlan[day][t]?.name || ''}</div>`).join('');
+            let previews = MEAL_TYPES.map(t => `<div style="margin-bottom:6px; font-size:0.85rem;"><b>${t}:</b> ${currentPlan[day][t]?.name || ''}</div>`).join('');
             card.innerHTML = `<div class="card-header"><span style="font-size:1.3rem; font-weight:800; color:var(--waldgruen);">${day}</span></div>${previews}`;
             grid.appendChild(card);
         });
@@ -231,25 +228,30 @@
         const container = document.getElementById('dayPagesContainer'); container.innerHTML = '';
         DAYS.forEach(day => {
             const pageDiv = document.createElement('div'); pageDiv.id = `page-${day}`; pageDiv.className = 'page';
-            let html = `<h2 style="color:var(--waldgruen); margin-bottom:20px;">📅 ${day}</h2>`;
+            let html = `<h2 style="color:var(--waldgruen); margin-bottom:20px;">📅 ${day} Tagesplan</h2>`;
             MEAL_TYPES.forEach(type => {
                 let meal = currentPlan[day][type];
+                if (!meal) return;
                 html += `
                     <div class="detail-meal-card">
                         <div>
-                            <span style="background:var(--terrakotta); color:white; padding:4px 10px; border-radius:8px; font-weight:bold;">${type}</span>
+                            <span style="background:var(--terrakotta); color:white; padding:4px 10px; border-radius:8px; font-weight:bold; font-size:0.8rem;">${type}</span>
                             <h3 style="color:var(--waldgruen); margin-top:10px;">${meal.name}</h3>
                             <button class="fav-btn" onclick="saveFavorite('${meal.name}')">⭐ Speichern</button>
-                            <p style="margin-top:12px;"><b>Gerät:</b> ${meal.device}</p>
-                            <p style="margin-top:8px; color:#0288d1;">🧪 <b>Bioverfügbarkeit:</b> ${meal.bio}</p>
+                            <p style="margin-top:12px; font-size:0.9rem;"><b>Gerät:</b> ${meal.device}</p>
+                            <p style="margin-top:8px; font-size:0.85rem; color:#0288d1;">🧪 <b>Bioverfügbarkeit:</b> ${meal.bio}</p>
                             <div style="margin-top:12px; display:flex; gap:8px;">
-                                <span class="macro-badge">🔥 ${meal.calories} kcal</span>
-                                <span class="macro-badge">💪 ${meal.protein}g Eiweiß</span>
+                                <span class="macro-badge">🔥 ~${meal.calories || 450} kcal</span>
+                                <span class="macro-badge">💪 ${meal.protein || 20}g Eiweiß</span>
                             </div>
                         </div>
                         <div>
-                            <h4>Zubereitung:</h4>
-                            <p style="margin-top:8px; line-height:1.5;">${meal.instructions}</p>
+                            <h4>🛒 Zutaten:</h4>
+                            <ul class="checklist">
+                                ${(meal.ingredients || []).map(i => `<li class="checklist-item"><b>${i.amount} ${i.unit}</b> ${i.item}</li>`).join('')}
+                            </ul>
+                            <h4 style="margin-top:14px;">👩‍🍳 Zubereitung:</h4>
+                            <p style="margin-top:6px; line-height:1.5; font-size:0.92rem;">${meal.instructions}</p>
                         </div>
                     </div>
                 `;
@@ -260,9 +262,14 @@
 
     function renderShoppingList() {
         const ul = document.getElementById('shoppingListUl'); ul.innerHTML = '';
-        DAYS.forEach(d => MEAL_TYPES.forEach(t => (currentPlan[d][t].ingredients || []).forEach(i => {
-            ul.innerHTML += `<li style="padding:8px 0; border-bottom:1px dashed var(--salbei-border);"><b>${i.amount} ${i.unit}</b> ${i.item}</li>`;
+        let totals = {};
+        DAYS.forEach(d => MEAL_TYPES.forEach(t => (currentPlan[d][t]?.ingredients || []).forEach(i => {
+            let key = `${i.item} (${i.unit})`;
+            totals[key] = (totals[key] || 0) + i.amount;
         })));
+        Object.keys(totals).forEach(k => {
+            ul.innerHTML += `<li style="padding:10px 14px; background:white; margin-bottom:6px; border-radius:10px; border:1px solid var(--salbei-border);"><b>${totals[k]}</b> ${k}</li>`;
+        });
     }
 
     function saveFavorite(mealName) {
@@ -270,20 +277,26 @@
             favorites.push(mealName);
             localStorage.setItem('nutri_favs', JSON.stringify(favorites));
             renderFavorites();
-            alert(`⭐ "${mealName}" wurde zu deinen Favoriten hinzugefügt!`);
+            alert(`⭐ "${mealName}" gespeichert!`);
         }
     }
 
     function renderFavorites() {
         const container = document.getElementById('favoritesContainer');
         container.innerHTML = favorites.length === 0 ? '<p>Noch keine Favoriten gespeichert.</p>' : 
-            favorites.map(f => `<div style="background:white; padding:12px 18px; border-radius:12px; margin-bottom:10px; border:1px solid var(--salbei-border); display:flex; justify-content:space-between;"><b>${f}</b></div>`).join('');
+            favorites.map(f => `<div style="background:white; padding:12px 18px; border-radius:12px; margin-bottom:10px; border:1px solid var(--salbei-border);"><b>${f}</b></div>`).join('');
     }
 
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-pill').forEach(n => n.classList.remove('active'));
+
         let target = document.getElementById(`page-${pageId}`);
         if (target) target.classList.add('active');
+
+        document.querySelectorAll('.nav-pill').forEach(n => {
+            if (n.innerText.includes(pageId)) n.classList.add('active');
+        });
     }
 
     async function generateKiPlan() {
@@ -292,16 +305,18 @@
 
         document.getElementById('loadingScreen').style.display = 'flex';
 
-        const prompt = `Erstelle einen veganen 7-Tage-Ernährungsplan (Montag bis Sonntag) für 2 Personen. 
-        Mahlzeiten pro Tag: Frühstück, Mittagessen, Abendessen, Snack.
-        Einschränkungen: KEINE rohen Tomaten! Hohe Bioverfügbarkeit (Eisen+Vit C). Berücksichtige Airfryer, Entsafter, Herd.
-        Antworte NUR in folgendem gültigen JSON-Format ohne Markdown-Codeblocks:
+        const prompt = `Erstelle einen veganen 7-Tage-Ernährungsplan (Montag bis Sonntag) für 2 Personen.
+        Mahlzeiten: Frühstück, Mittagessen, Abendessen, Snack.
+        Regeln: Keine rohen Tomaten. Hohe Bioverfügbarkeit (Eisen, Vitamin C). Berücksichtige Airfryer, Entsafter, Herd.
+        Antworte AUSSCHLIESSLICH mit reinem JSON (ohne Markdown, ohne \`\`\`json):
         {
           "Montag": {
-            "Frühstück": {"name": "...", "device": "...", "bio": "...", "calories": 400, "protein": 20, "carbs": 50, "fat": 15, "ingredients": [{"item": "...", "amount": 100, "unit": "g"}], "instructions": "..."},
-            "Mittagessen": {...}, "Abendessen": {...}, "Snack": {...}
+            "Frühstück": {"name": "...", "device": "...", "bio": "...", "calories": 400, "protein": 20, "ingredients": [{"item": "...", "amount": 100, "unit": "g"}], "instructions": "..."},
+            "Mittagessen": {"name": "...", "device": "...", "bio": "...", "calories": 500, "protein": 25, "ingredients": [{"item": "...", "amount": 100, "unit": "g"}], "instructions": "..."},
+            "Abendessen": {"name": "...", "device": "...", "bio": "...", "calories": 500, "protein": 25, "ingredients": [{"item": "...", "amount": 100, "unit": "g"}], "instructions": "..."},
+            "Snack": {"name": "...", "device": "...", "bio": "...", "calories": 200, "protein": 10, "ingredients": [{"item": "...", "amount": 50, "unit": "g"}], "instructions": "..."}
           },
-          ... (bis Sonntag)
+          "Dienstag": {...}, "Mittwoch": {...}, "Donnerstag": {...}, "Freitag": {...}, "Samstag": {...}, "Sonntag": {...}
         }`;
 
         try {
@@ -318,7 +333,7 @@
             renderDashboard(); renderPages(); renderShoppingList();
             showPage('dashboard');
         } catch (e) {
-            alert("Fehler bei der KI-Generierung. Bitte prüfe deinen API-Key!");
+            alert("Fehler bei der KI-Generierung. Bitte prüfe deinen API-Key oder erstelle einen neuen im Google AI Studio!");
         } finally {
             document.getElementById('loadingScreen').style.display = 'none';
         }
