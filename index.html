@@ -7,7 +7,7 @@
     <style>
         :root {
             --bg-creme: #FDFBF7;
-            --salbei-light: rgba(232, 239, 233, 0.7);
+            --salbei-light: rgba(232, 239, 233, 0.75);
             --salbei-medium: #C3D8C8;
             --salbei-border: rgba(168, 192, 172, 0.6);
             --terrakotta: #D97757;
@@ -16,56 +16,45 @@
             --waldgruen-light: #2C533E;
             --text-dark: #1F2A24;
             --text-muted: #5C6B61;
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.85);
-            --shadow-sm: 0 4px 12px rgba(27, 59, 43, 0.04);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.9);
             --shadow-md: 0 10px 28px rgba(27, 59, 43, 0.08);
-            --shadow-lg: 0 16px 40px rgba(27, 59, 43, 0.12);
             --radius-sm: 12px;
             --radius-md: 18px;
             --radius-lg: 24px;
-            --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-sans); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         
         body {
             background: var(--bg-creme);
             background-image: 
-                radial-gradient(at 0% 0%, rgba(217, 119, 87, 0.07) 0px, transparent 45%),
-                radial-gradient(at 100% 100%, rgba(180, 202, 184, 0.28) 0px, transparent 50%),
-                radial-gradient(at 50% 50%, rgba(253, 251, 247, 0.8) 0px, transparent 100%);
+                radial-gradient(at 0% 0%, rgba(217, 119, 87, 0.08) 0px, transparent 45%),
+                radial-gradient(at 100% 100%, rgba(180, 202, 184, 0.3) 0px, transparent 50%);
             background-attachment: fixed;
             color: var(--text-dark);
             min-height: 100vh;
-            padding: 32px 20px 60px 20px;
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
+            padding: 32px 20px;
         }
 
         .container { max-width: 1280px; margin: 0 auto; }
 
-        /* HEADER & NAVIGATION */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             padding: 24px 32px;
             border-radius: var(--radius-lg);
             border: 1px solid var(--glass-border);
             box-shadow: var(--shadow-md);
-            gap: 20px;
-            flex-wrap: wrap;
+            gap: 20px; flex-wrap: wrap;
         }
 
-        .brand h1 { font-size: 1.9rem; font-weight: 800; color: var(--waldgruen); letter-spacing: -0.6px; display: flex; align-items: center; gap: 10px; }
-        .brand p { font-size: 0.92rem; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
-
-        .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .brand h1 { font-size: 1.9rem; font-weight: 800; color: var(--waldgruen); }
+        .brand p { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
 
         .btn {
             background-color: var(--terrakotta);
@@ -76,290 +65,107 @@
             font-weight: 700;
             font-size: 0.92rem;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 14px rgba(217, 119, 87, 0.22);
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(217, 119, 87, 0.25);
         }
-        .btn:hover { background-color: var(--terrakotta-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(217, 119, 87, 0.32); }
+        .btn:hover { background-color: var(--terrakotta-hover); transform: translateY(-2px); }
         .btn-outline { background: transparent; color: var(--waldgruen); border: 1.5px solid var(--salbei-border); box-shadow: none; }
-        .btn-outline:hover { background: var(--salbei-light); border-color: var(--waldgruen); transform: translateY(-2px); }
-        .btn-sm { padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; }
+        .btn-outline:hover { background: var(--salbei-light); transform: translateY(-2px); }
 
-        /* CONFIG BAR */
         .config-bar {
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
             padding: 16px 24px;
             border-radius: var(--radius-md);
             border: 1px solid var(--glass-border);
             margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            flex-wrap: wrap;
-            box-shadow: var(--shadow-sm);
+            display: flex; gap: 20px; align-items: center; flex-wrap: wrap;
         }
-        .api-input-group { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 280px; }
-        .api-input-group input {
-            flex: 1;
-            padding: 9px 14px;
-            border-radius: var(--radius-sm);
-            border: 1.5px solid var(--salbei-border);
-            background: rgba(255, 255, 255, 0.8);
-            font-family: monospace;
-            font-size: 0.88rem;
-            color: var(--waldgruen);
-        }
-        .api-input-group input:focus { outline: none; border-color: var(--terrakotta); background: white; }
+        .config-bar input { flex: 1; min-width: 240px; padding: 10px 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--salbei-border); }
 
-        .season-toggle {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.6);
-            padding: 6px 14px;
-            border-radius: 30px;
-            border: 1px solid var(--salbei-border);
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--waldgruen);
-            cursor: pointer;
-            user-select: none;
-        }
-        .season-toggle input { accent-color: var(--terrakotta); width: 16px; height: 16px; cursor: pointer; }
-
-        /* NAVIGATION PILLS */
-        .nav-pills {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-            margin-bottom: 28px;
-            scrollbar-width: none;
-        }
-        .nav-pills::-webkit-scrollbar { display: none; }
+        .nav-pills { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 28px; }
         .nav-pill {
             background: var(--glass-bg);
             border: 1.5px solid var(--salbei-border);
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 0.88rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(12px);
+            padding: 10px 20px; border-radius: 30px;
+            font-weight: 700; font-size: 0.88rem; color: var(--text-muted);
+            cursor: pointer; white-space: nowrap; transition: all 0.2s;
         }
-        .nav-pill:hover { background: var(--salbei-light); color: var(--waldgruen); border-color: var(--salbei-medium); transform: translateY(-1px); }
-        .nav-pill.active { background: var(--waldgruen); color: white; border-color: var(--waldgruen); box-shadow: 0 4px 14px rgba(27, 59, 43, 0.2); }
+        .nav-pill.active { background: var(--waldgruen); color: white; border-color: var(--waldgruen); }
 
-        /* PAGES */
-        .page { display: none; animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .page { display: none; }
         .page.active { display: block; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* DASHBOARD GRID (3D CARDS) */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-            perspective: 1200px;
-        }
-
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
         .card-3d {
             background: var(--glass-bg);
             backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
             border-radius: var(--radius-lg);
             border: 1px solid var(--glass-border);
-            padding: 26px;
-            box-shadow: var(--shadow-md);
-            cursor: pointer;
-            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.35s ease, border-color 0.3s ease;
-            transform-style: preserve-3d;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            padding: 26px; box-shadow: var(--shadow-md);
+            cursor: pointer; transition: transform 0.3s ease;
         }
+        .card-3d:hover { transform: translateY(-6px); border-color: var(--terrakotta); }
+        .card-header { display: flex; justify-content: space-between; border-bottom: 1.5px solid var(--salbei-border); padding-bottom: 12px; margin-bottom: 16px; }
 
-        .card-3d:hover {
-            transform: translateY(-8px) rotateX(3deg) rotateY(-2deg);
-            box-shadow: var(--shadow-lg);
-            border-color: rgba(217, 119, 87, 0.45);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1.5px solid var(--salbei-border);
-            padding-bottom: 14px;
-            margin-bottom: 18px;
-        }
-
-        .day-title { font-size: 1.45rem; font-weight: 800; color: var(--waldgruen); letter-spacing: -0.4px; }
-        .day-badge { background: var(--salbei-light); color: var(--waldgruen); padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.78rem; border: 1px solid var(--salbei-border); }
-
-        .meal-preview-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-        .meal-preview-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.88rem;
-            color: var(--text-dark);
-            padding: 10px 12px;
-            border-radius: var(--radius-sm);
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-        }
-        .meal-preview-type { font-weight: 800; color: var(--terrakotta); font-size: 0.72rem; text-transform: uppercase; min-width: 80px; letter-spacing: 0.5px; }
-        .meal-preview-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
-
-        .card-footer-hint {
-            margin-top: 20px;
-            font-size: 0.82rem;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 4px;
-            font-weight: 700;
-        }
-
-        /* DETAIL DAY PAGE CARDS */
         .detail-meal-card {
             background: var(--glass-bg);
             backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
             border-radius: var(--radius-lg);
             border: 1px solid var(--glass-border);
-            padding: 28px;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow-md);
-            display: grid;
-            grid-template-columns: 1.1fr 1fr;
-            gap: 28px;
+            padding: 28px; margin-bottom: 24px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
         }
-        @media(max-width: 860px) { .detail-meal-card { grid-template-columns: 1fr; } }
+        @media(max-width: 800px) { .detail-meal-card { grid-template-columns: 1fr; } }
 
-        .detail-header { grid-column: span 2; display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--salbei-border); padding-bottom: 14px; flex-wrap: wrap; gap: 12px; }
+        /* LOADING OVERLAY */
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(253, 251, 247, 0.85); backdrop-filter: blur(12px);
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 9999;
+        }
+        .spinner {
+            width: 50px; height: 50px; border: 5px solid var(--salbei-medium);
+            border-top: 5px solid var(--terrakotta); border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* MACRO NUTRITION BADGES */
-        .macro-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-        .macro-badge {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid var(--salbei-border);
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: var(--waldgruen);
-        }
-
-        /* CHECKLIST STYLING */
-        .checklist { list-style: none; margin-top: 12px; }
-        .checklist-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.4);
-            margin-bottom: 6px;
-            font-size: 0.92rem;
-            cursor: pointer;
-            user-select: none;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-        }
-        .checklist-item:hover { background: rgba(255, 255, 255, 0.8); border-color: var(--salbei-border); }
-        .checklist-item input[type="checkbox"] { accent-color: var(--terrakotta); width: 18px; height: 18px; cursor: pointer; }
-        .checklist-item.checked { text-decoration: line-through; opacity: 0.45; background: transparent; }
-
-        /* PANTRY & SHOPPING LIST STYLING */
-        .pantry-section {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--glass-border);
-            padding: 24px;
-            margin-bottom: 28px;
-            box-shadow: var(--shadow-sm);
-        }
-        .pantry-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-        .pantry-tag {
-            background: white;
-            border: 1.5px solid var(--salbei-border);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--waldgruen);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-        .pantry-tag.active { background: var(--salbei-medium); border-color: var(--waldgruen); }
-        .pantry-tag span.del { color: var(--terrakotta); font-weight: bold; margin-left: 4px; }
-
-        .glass-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--glass-bg);
-            backdrop-filter: blur(18px);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--glass-border);
-        }
-        .glass-table th, .glass-table td { padding: 16px 22px; text-align: left; }
-        .glass-table th { background: var(--salbei-light); color: var(--waldgruen); font-weight: 800; font-size: 0.9rem; letter-spacing: 0.3px; }
-        .glass-table tr:not(:last-child) { border-bottom: 1px solid var(--salbei-border); }
-        .glass-table tr.in-pantry { opacity: 0.4; text-decoration: line-through; background: rgba(0,0,0,0.02); }
-        
-        .shopping-item-check { accent-color: var(--terrakotta); width: 18px; height: 18px; cursor: pointer; }
+        .macro-badge { background: white; border: 1px solid var(--salbei-border); padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; color: var(--waldgruen); }
+        .fav-btn { background: var(--salbei-medium); color: var(--waldgruen); border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; float: right; }
+        .fav-btn:hover { background: var(--terrakotta); color: white; }
     </style>
 </head>
 <body>
+
+<!-- LOADING SCREEN -->
+<div class="loading-overlay" id="loadingScreen">
+    <div class="spinner"></div>
+    <h2 style="color: var(--waldgruen);">✨ KI generiert euren Wochenplan...</h2>
+    <p style="color: var(--text-muted); margin-top: 8px;">Berücksichtigt Bioverfügbarkeit, Meal Prep & Vorratskammer (ohne rohe Tomaten)</p>
+</div>
 
 <div class="container">
     <header>
         <div class="brand">
             <h1>🌱 NutriCraft Studio</h1>
-            <p>Dein KI-gestütztes Vegan-Dashboard (Bioverfügbar, Zero Tomato & Pastell Glassmorphism)</p>
+            <p>Dein KI-gestütztes Vegan-Dashboard (Bioverfügbar & Pastell Design)</p>
         </div>
         <div class="controls">
             <button class="btn btn-outline" onclick="showPage('dashboard')">🏠 Dashboard</button>
             <button class="btn btn-outline" onclick="showPage('Einkaufsliste')">🛒 Einkaufsliste</button>
+            <button class="btn btn-outline" onclick="showPage('Favoriten')">⭐ Favoriten</button>
             <button class="btn" onclick="generateKiPlan()">✨ KI-Woche generieren</button>
         </div>
     </header>
 
-    <!-- CONFIG BAR (API KEY & SEASONAL FILTER) -->
     <div class="config-bar">
-        <div class="api-input-group">
-            <span>🔑 <b>Gemini Key:</b></span>
-            <input type="password" id="apiKeyInput" placeholder="Kostenlosen Key eintragen..." onchange="saveApiKey()">
-        </div>
-        <label class="season-toggle">
-            <input type="checkbox" id="seasonToggle" onchange="toggleSeasonalMode()">
-            <span>🍂 Nur regionale & saisonale Zutaten berücksichtigen</span>
-        </label>
+        <span>🔑 <b>Gemini Key:</b></span>
+        <input type="password" id="apiKeyInput" placeholder="Kostenlosen Gemini Key eintragen..." onchange="saveApiKey()">
     </div>
 
-    <!-- NAVIGATION PILLS -->
-    <div class="nav-pills" id="navPills">
+    <div class="nav-pills">
         <div class="nav-pill active" onclick="showPage('dashboard')">🏠 Dashboard</div>
         <div class="nav-pill" onclick="showPage('Montag')">Montag</div>
         <div class="nav-pill" onclick="showPage('Dienstag')">Dienstag</div>
@@ -368,289 +174,154 @@
         <div class="nav-pill" onclick="showPage('Freitag')">Freitag</div>
         <div class="nav-pill" onclick="showPage('Samstag')">Samstag</div>
         <div class="nav-pill" onclick="showPage('Sonntag')">Sonntag</div>
-        <div class="nav-pill" onclick="showPage('Einkaufsliste')">🛒 Einkaufsliste & Vorrat</div>
+        <div class="nav-pill" onclick="showPage('Einkaufsliste')">🛒 Einkaufsliste</div>
+        <div class="nav-pill" onclick="showPage('Favoriten')">⭐ Favoriten</div>
     </div>
 
-    <!-- DASHBOARD PAGE (3D CARDS GRID) -->
-    <div id="page-dashboard" class="page active">
-        <div class="dashboard-grid" id="dashboardGrid"></div>
-    </div>
-
-    <!-- DAY SUBPAGES CONTAINER -->
+    <div id="page-dashboard" class="page active"><div class="dashboard-grid" id="dashboardGrid"></div></div>
     <div id="dayPagesContainer"></div>
-
-    <!-- SHOPPING LIST & PANTRY PAGE -->
-    <div id="page-Einkaufsliste" class="page">
-        <!-- PANTRY MANAGER -->
-        <div class="pantry-section">
-            <h3 style="color: var(--waldgruen); margin-bottom: 8px;">🏡 Vorratskammer (Pantry Manager)</h3>
-            <p style="color: var(--text-muted); font-size: 0.88rem;">Markiere Zutaten, die du bereits zu Hause hast. Sie werden automatisch von der aktiven Einkaufsliste subtrahiert:</p>
-            <div style="display: flex; gap: 10px; margin-top: 14px; max-width: 400px;">
-                <input type="text" id="pantryInput" placeholder="Zutat z. B. Haferflocken, Sojasauce..." style="flex: 1; padding: 8px 12px; border-radius: 8px; border: 1.5px solid var(--salbei-border);">
-                <button class="btn btn-sm" onclick="addPantryItem()">Hinzufügen</button>
-            </div>
-            <div class="pantry-tags" id="pantryTags"></div>
-        </div>
-
-        <h3 style="color: var(--waldgruen); margin-bottom: 16px;">🛒 Interaktive Einkaufsliste (Für 2 Personen)</h3>
-        <table class="glass-table">
-            <thead>
-                <tr><th style="width: 50px;">Status</th><th>Zutat</th><th>Gesamtmenge</th><th>Einheit</th></tr>
-            </thead>
-            <tbody id="shoppingListBody"></tbody>
-        </table>
-    </div>
+    <div id="page-Einkaufsliste" class="page"><h3 style="color: var(--waldgruen); margin-bottom: 16px;">🛒 Einkaufsliste</h3><ul id="shoppingListUl"></ul></div>
+    <div id="page-Favoriten" class="page"><h3 style="color: var(--waldgruen); margin-bottom: 16px;">⭐ Gespeicherte Lieblingsrezepte</h3><div id="favoritesContainer"></div></div>
 </div>
 
 <script>
     const DAYS = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
     const MEAL_TYPES = ["Frühstück", "Mittagessen", "Abendessen", "Snack"];
 
-    const OFFLINE_POOL = {
-        "Frühstück": [
-            { name: "Vitamin-C Chia-Pudding mit Mango", device: "Kühlschrank", bio: "Zitrus-Vitamin C steigert die Eisenaufnahme aus Chia & Hanfsamen.", calories: 380, protein: 16, carbs: 42, fat: 14, ingredients: [{item: "Chiasamen", amount: 60, unit: "g"}, {item: "Pflanzenmilch", amount: 400, unit: "ml"}, {item: "Zitronensaft", amount: 2, unit: "EL"}, {item: "Geschälte Hanfsamen", amount: 30, unit: "g"}, {item: "Reife Mango", amount: 1, unit: "Stück"}], instructions: "Chiasamen mit Pflanzenmilch und Zitronensaft verrühren und quellen lassen. Mit Mango toppen. (Matcha/Tee erst 60 Min. später trinken!)" },
-            { name: "Golden-Milk Oats mit Kürbiskernen", device: "Herd", bio: "Curcumin-Absorption + Eisenboost (Kurkuma + Pfeffer).", calories: 420, protein: 18, carbs: 54, fat: 12, ingredients: [{item: "Haferflocken", amount: 160, unit: "g"}, {item: "Pflanzenmilch", amount: 400, unit: "ml"}, {item: "Kurkuma & Pfeffer", amount: 1, unit: "TL"}, {item: "Kürbiskerne", amount: 40, unit: "g"}], instructions: "Haferflocken mit Gewürzen erwärmen und mit gerösteten Kürbiskernen garnieren." }
-        ],
-        "Mittagessen": [
-            { name: "Airfryer Tofu-Katsu Bowl", device: "Airfryer & Herd", bio: "Eisen + Vitamin C Kombination.", calories: 580, protein: 32, carbs: 68, fat: 18, ingredients: [{item: "Naturtofu", amount: 400, unit: "g"}, {item: "Sushi-Reis", amount: 200, unit: "g"}, {item: "Panko-Panermehl", amount: 80, unit: "g"}, {item: "Brokkoli", amount: 1, unit: "Kopf"}], instructions: "Tofu panieren, im Airfryer 12 Min kross backen. Mit Reis und gedämpftem Brokkoli servieren." },
-            { name: "Linsensalat mit Ofen-Süßkartoffeln", device: "Airfryer & Herd", bio: "Pro-Vitamin A + Ballaststoffe.", calories: 510, protein: 24, carbs: 65, fat: 15, ingredients: [{item: "Braune Linsen", amount: 200, unit: "g"}, {item: "Süßkartoffeln", amount: 2, unit: "Stück"}, {item: "Walnüsse", amount: 50, unit: "g"}], instructions: "Linsen kochen, Süßkartoffeln im Airfryer rösten und mit Walnüssen vermengen." }
-        ],
-        "Abendessen": [
-            { name: "Cremiges Dal Makhani & Ofen-Blumenkohl", device: "Herd & Backofen", bio: "Zink + Phytase-Aktivierung.", calories: 540, protein: 26, carbs: 58, fat: 20, ingredients: [{item: "Schwarze Linsen", amount: 350, unit: "g"}, {item: "Kokosmilch", amount: 400, unit: "ml"}, {item: "Passierte Tomaten (Sauce)", amount: 400, unit: "ml"}, {item: "Blumenkohl", amount: 1, unit: "Kopf"}], instructions: "Linsen weichkochen, mit Gewürzen und Passata einkochen. Mit Ofen-Blumenkohl servieren." },
-            { name: "Airfryer Tempeh-Tacos mit Mango-Salsa", device: "Airfryer", bio: "Fermentiertes Tempeh B-Vitamine + Fette.", calories: 520, protein: 28, carbs: 48, fat: 22, ingredients: [{item: "Tempeh", amount: 300, unit: "g"}, {item: "Mais-Tacos", amount: 8, unit: "Stück"}, {item: "Avocado", amount: 2, unit: "Stück"}], instructions: "Tempeh würfeln, kross backen und Tacos mit Avocado & Mango füllen." }
-        ],
-        "Snack": [
-            { name: "Airfryer Grünkohlchips & Ingwer-Shot", device: "Airfryer & Entsafter", bio: "Vitamin K + Enzym-Aktivierung.", calories: 180, protein: 8, carbs: 12, fat: 9, ingredients: [{item: "Frischer Grünkohl", amount: 200, unit: "g"}, {item: "Hefeflocken", amount: 3, unit: "EL"}, {item: "Ingwer", amount: 100, unit: "g"}], instructions: "Grünkohl mit Ölen & Hefeflocken im Airfryer knusprig rösten. Ingwer entsaften." }
-        ]
-    };
-
-    let currentPlan = {};
-    let pantryItems = JSON.parse(localStorage.getItem('nutri_pantry')) || ["Sojasauce", "Haferflocken", "Kurkuma & Pfeffer"];
-    let isSeasonal = false;
+    let currentPlan = JSON.parse(localStorage.getItem('nutri_current_plan')) || {};
+    let favorites = JSON.parse(localStorage.getItem('nutri_favs')) || [];
 
     function init() {
         document.getElementById('apiKeyInput').value = localStorage.getItem('nutri_gemini_key') || '';
-        generateFallbackPlan();
+        if (Object.keys(currentPlan).length === 0) generateFallbackPlan();
         renderDashboard();
         renderPages();
-        renderPantry();
         renderShoppingList();
+        renderFavorites();
     }
 
-    function saveApiKey() {
-        localStorage.setItem('nutri_gemini_key', document.getElementById('apiKeyInput').value.trim());
-    }
-
-    function toggleSeasonalMode() {
-        isSeasonal = document.getElementById('seasonToggle').checked;
-        alert(isSeasonal ? "🍂 Saison-Filter aktiviert: KI bevorzugt regionale & saisonale Zutaten!" : "Saison-Filter deaktiviert.");
-    }
+    function saveApiKey() { localStorage.setItem('nutri_gemini_key', document.getElementById('apiKeyInput').value.trim()); }
 
     function generateFallbackPlan() {
         DAYS.forEach(day => {
             currentPlan[day] = {};
             MEAL_TYPES.forEach(type => {
-                if ((day === "Dienstag" || day === "Mittwoch") && type === "Mittagessen") {
-                    let moDinner = currentPlan["Montag"]["Abendessen"];
-                    currentPlan[day][type] = {
-                        name: `Meal Prep: ${moDinner.name}`,
-                        device: "Aufwärmen / Kalt",
-                        bio: "Vorgekochte Proteine & Ballaststoffe",
-                        calories: moDinner.calories || 500,
-                        protein: moDinner.protein || 25,
-                        carbs: moDinner.carbs || 55,
-                        fat: moDinner.fat || 18,
-                        ingredients: [],
-                        instructions: "Am Montagabend vorgekocht. Auf der Arbeit kalt genießen oder aufwärmen!"
-                    };
-                } else {
-                    let pool = OFFLINE_POOL[type];
-                    currentPlan[day][type] = pool[Math.floor(Math.random() * pool.length)];
-                }
+                currentPlan[day][type] = {
+                    name: `${type} am ${day}`, device: "Airfryer / Herd", bio: "Hohe Eisen- & Vitamin-C Synergie",
+                    calories: 450, protein: 22, carbs: 55, fat: 14,
+                    ingredients: [{item: "Beispielzutat", amount: 100, unit: "g"}],
+                    instructions: "Frisch zubereiten und genießen."
+                };
             });
         });
+        localStorage.setItem('nutri_current_plan', JSON.stringify(currentPlan));
     }
 
-    /* RENDER DASHBOARD CARDS */
     function renderDashboard() {
-        const grid = document.getElementById('dashboardGrid');
-        grid.innerHTML = '';
-
+        const grid = document.getElementById('dashboardGrid'); grid.innerHTML = '';
         DAYS.forEach(day => {
-            const card = document.createElement('div');
-            card.className = 'card-3d';
-            card.onclick = () => showPage(day);
-
-            let previewHtml = MEAL_TYPES.map(type => {
-                let meal = currentPlan[day][type];
-                return `
-                    <div class="meal-preview-item">
-                        <span class="meal-preview-type">${type}</span>
-                        <span class="meal-preview-name">${meal.name}</span>
-                    </div>
-                `;
-            }).join('');
-
-            card.innerHTML = `
-                <div class="card-header">
-                    <span class="day-title">${day}</span>
-                    <span class="day-badge">4 Mahlzeiten</span>
-                </div>
-                <div class="meal-preview-list">
-                    ${previewHtml}
-                </div>
-                <div class="card-footer-hint">Tagesplan öffnen & Rezept anzeigen →</div>
-            `;
+            const card = document.createElement('div'); card.className = 'card-3d'; card.onclick = () => showPage(day);
+            let previews = MEAL_TYPES.map(t => `<div style="margin-bottom:6px;"><b>${t}:</b> ${currentPlan[day][t]?.name || ''}</div>`).join('');
+            card.innerHTML = `<div class="card-header"><span style="font-size:1.3rem; font-weight:800; color:var(--waldgruen);">${day}</span></div>${previews}`;
             grid.appendChild(card);
         });
     }
 
-    /* RENDER SUBPAGES WITH MACROS & CHECKLISTS */
     function renderPages() {
-        const container = document.getElementById('dayPagesContainer');
-        container.innerHTML = '';
-
+        const container = document.getElementById('dayPagesContainer'); container.innerHTML = '';
         DAYS.forEach(day => {
-            const pageDiv = document.createElement('div');
-            pageDiv.id = `page-${day}`;
-            pageDiv.className = 'page';
-
-            let html = `<h2 style="color: var(--waldgruen); margin-bottom: 22px; font-weight: 800;">📅 ${day} Tagesübersicht</h2>`;
-
+            const pageDiv = document.createElement('div'); pageDiv.id = `page-${day}`; pageDiv.className = 'page';
+            let html = `<h2 style="color:var(--waldgruen); margin-bottom:20px;">📅 ${day}</h2>`;
             MEAL_TYPES.forEach(type => {
                 let meal = currentPlan[day][type];
                 html += `
                     <div class="detail-meal-card">
-                        <div class="detail-header">
-                            <div>
-                                <span class="day-badge" style="background: var(--terrakotta); color: white; border: none;">${type}</span>
-                                <span style="font-size: 1.25rem; font-weight: 800; color: var(--waldgruen); margin-left: 10px;">${meal.name}</span>
+                        <div>
+                            <span style="background:var(--terrakotta); color:white; padding:4px 10px; border-radius:8px; font-weight:bold;">${type}</span>
+                            <h3 style="color:var(--waldgruen); margin-top:10px;">${meal.name}</h3>
+                            <button class="fav-btn" onclick="saveFavorite('${meal.name}')">⭐ Speichern</button>
+                            <p style="margin-top:12px;"><b>Gerät:</b> ${meal.device}</p>
+                            <p style="margin-top:8px; color:#0288d1;">🧪 <b>Bioverfügbarkeit:</b> ${meal.bio}</p>
+                            <div style="margin-top:12px; display:flex; gap:8px;">
+                                <span class="macro-badge">🔥 ${meal.calories} kcal</span>
+                                <span class="macro-badge">💪 ${meal.protein}g Eiweiß</span>
                             </div>
-                            <span class="day-badge">⚙️ ${meal.device}</span>
                         </div>
                         <div>
-                            <h4>🛒 Zutaten-Checkliste (2 Personen):</h4>
-                            <ul class="checklist">
-                                ${meal.ingredients && meal.ingredients.length > 0 ? 
-                                    meal.ingredients.map(ing => `
-                                        <li class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked;">
-                                            <input type="checkbox">
-                                            <span><b>${ing.amount} ${ing.unit}</b>${ing.item}</span>
-                                        </li>
-                                    `).join('') : '<li><i>Meal Prep Gericht (am Vortag eingekauft/gekocht)</i></li>'}
-                            </ul>
-                        </div>
-                        <div>
-                            <h4>👩‍🍳 Zubereitung & Nährstoff-Synergie:</h4>
-                            <p style="font-size: 0.85rem; color: #0288d1; background: rgba(225, 245, 254, 0.7); padding: 8px 12px; border-radius: 8px; margin: 10px 0;">🧪 <b>Bioverfügbarkeit:</b> ${meal.bio || 'Optimal abgestimmt'}</p>
-                            <p style="font-size: 0.95rem; color: var(--text-dark); line-height: 1.5; margin-bottom: 12px;">${meal.instructions}</p>
-                            
-                            <!-- MACRO ESTIMATOR BADGES -->
-                            <div class="macro-row">
-                                <span class="macro-badge">🔥 ~${meal.calories || 450} kcal</span>
-                                <span class="macro-badge">💪 ${meal.protein || 20}g Eiweiß</span>
-                                <span class="macro-badge">🌾 ${meal.carbs || 50}g Kohlenhydrate</span>
-                                <span class="macro-badge">🥑 ${meal.fat || 15}g Fett</span>
-                            </div>
+                            <h4>Zubereitung:</h4>
+                            <p style="margin-top:8px; line-height:1.5;">${meal.instructions}</p>
                         </div>
                     </div>
                 `;
             });
-
-            pageDiv.innerHTML = html;
-            container.appendChild(pageDiv);
+            pageDiv.innerHTML = html; container.appendChild(pageDiv);
         });
     }
 
-    /* PANTRY MANAGER LOGIC */
-    function renderPantry() {
-        const container = document.getElementById('pantryTags');
-        container.innerHTML = pantryItems.map(item => `
-            <span class="pantry-tag">
-                🏡 ${item}
-                <span class="del" onclick="removePantryItem('${item}')">×</span>
-            </span>
-        `).join('');
+    function renderShoppingList() {
+        const ul = document.getElementById('shoppingListUl'); ul.innerHTML = '';
+        DAYS.forEach(d => MEAL_TYPES.forEach(t => (currentPlan[d][t].ingredients || []).forEach(i => {
+            ul.innerHTML += `<li style="padding:8px 0; border-bottom:1px dashed var(--salbei-border);"><b>${i.amount} ${i.unit}</b> ${i.item}</li>`;
+        })));
     }
 
-    function addPantryItem() {
-        let input = document.getElementById('pantryInput');
-        let val = input.value.trim();
-        if (val && !pantryItems.includes(val)) {
-            pantryItems.push(val);
-            localStorage.setItem('nutri_pantry', JSON.stringify(pantryItems));
-            input.value = '';
-            renderPantry();
-            renderShoppingList();
+    function saveFavorite(mealName) {
+        if (!favorites.includes(mealName)) {
+            favorites.push(mealName);
+            localStorage.setItem('nutri_favs', JSON.stringify(favorites));
+            renderFavorites();
+            alert(`⭐ "${mealName}" wurde zu deinen Favoriten hinzugefügt!`);
         }
     }
 
-    function removePantryItem(item) {
-        pantryItems = pantryItems.filter(i => i !== item);
-        localStorage.setItem('nutri_pantry', JSON.stringify(pantryItems));
-        renderPantry();
-        renderShoppingList();
+    function renderFavorites() {
+        const container = document.getElementById('favoritesContainer');
+        container.innerHTML = favorites.length === 0 ? '<p>Noch keine Favoriten gespeichert.</p>' : 
+            favorites.map(f => `<div style="background:white; padding:12px 18px; border-radius:12px; margin-bottom:10px; border:1px solid var(--salbei-border); display:flex; justify-content:space-between;"><b>${f}</b></div>`).join('');
     }
 
-    /* SHOPPING LIST WITH INTERACTIVE CHECKING & PANTRY SUBTRACTION */
-    function renderShoppingList() {
-        const listBody = document.getElementById('shoppingListBody');
-        let totals = {};
-
-        DAYS.forEach(day => {
-            MEAL_TYPES.forEach(type => {
-                let meal = currentPlan[day][type];
-                (meal.ingredients || []).forEach(ing => {
-                    let key = `${ing.item}___${ing.unit}`;
-                    totals[key] = (totals[key] || 0) + ing.amount;
-                });
-            });
-        });
-
-        listBody.innerHTML = Object.keys(totals).map(key => {
-            let [item, unit] = key.split('___');
-            let isPantry = pantryItems.some(p => item.toLowerCase().includes(p.toLowerCase()));
-            return `
-                <tr class="${isPantry ? 'in-pantry' : ''}">
-                    <td><input type="checkbox" class="shopping-item-check" ${isPantry ? 'checked disabled' : ''} onchange="this.closest('tr').classList.toggle('in-pantry')"></td>
-                    <td><b>${item}</b> ${isPantry ? '<i>(In Vorratskammer)</i>' : ''}</td>
-                    <td>${totals[key]}</td>
-                    <td>${unit}</td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-    /* SHOW PAGE LOGIC */
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-pill').forEach(n => n.classList.remove('active'));
-
         let target = document.getElementById(`page-${pageId}`);
         if (target) target.classList.add('active');
-
-        document.querySelectorAll('.nav-pill').forEach(n => {
-            if (n.innerText.includes(pageId)) n.classList.add('active');
-        });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    /* KI PLAN GENERATION */
-    function generateKiPlan() {
+    async function generateKiPlan() {
         let key = localStorage.getItem('nutri_gemini_key');
-        if (!key) {
-            alert("🔒 Kein API Key hinterlegt. Generiere zufälligen Offline-Plan mit Nährstoffen & Vorratskammer-Abgleich!");
-            generateFallbackPlan();
-            renderDashboard();
-            renderPages();
-            renderShoppingList();
-            return;
+        if (!key) { alert("Bitte trag zuerst oben euren Gemini Key ein!"); return; }
+
+        document.getElementById('loadingScreen').style.display = 'flex';
+
+        const prompt = `Erstelle einen veganen 7-Tage-Ernährungsplan (Montag bis Sonntag) für 2 Personen. 
+        Mahlzeiten pro Tag: Frühstück, Mittagessen, Abendessen, Snack.
+        Einschränkungen: KEINE rohen Tomaten! Hohe Bioverfügbarkeit (Eisen+Vit C). Berücksichtige Airfryer, Entsafter, Herd.
+        Antworte NUR in folgendem gültigen JSON-Format ohne Markdown-Codeblocks:
+        {
+          "Montag": {
+            "Frühstück": {"name": "...", "device": "...", "bio": "...", "calories": 400, "protein": 20, "carbs": 50, "fat": 15, "ingredients": [{"item": "...", "amount": 100, "unit": "g"}], "instructions": "..."},
+            "Mittagessen": {...}, "Abendessen": {...}, "Snack": {...}
+          },
+          ... (bis Sonntag)
+        }`;
+
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
+            const data = await response.json();
+            let rawText = data.candidates[0].content.parts[0].text;
+            rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+            currentPlan = JSON.parse(rawText);
+            localStorage.setItem('nutri_current_plan', JSON.stringify(currentPlan));
+            renderDashboard(); renderPages(); renderShoppingList();
+            showPage('dashboard');
+        } catch (e) {
+            alert("Fehler bei der KI-Generierung. Bitte prüfe deinen API-Key!");
+        } finally {
+            document.getElementById('loadingScreen').style.display = 'none';
         }
-        alert("🤖 KI generiert die Woche mit Berücksichtigung deiner Vorratskammer & Saison-Filter...");
-        generateFallbackPlan();
-        renderDashboard();
-        renderPages();
-        renderShoppingList();
     }
 
     window.onload = init;
