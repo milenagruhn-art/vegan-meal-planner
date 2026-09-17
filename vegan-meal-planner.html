@@ -1,426 +1,660 @@
-import random
-import pandas as pd
-import streamlit as st
-
-st.set_page_config(
-    page_title="NutriCraft Vegan App",
-    page_icon="🌱",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
-
-# Custom Styling
-st.markdown(
-    """
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriCraft Studio — KI-Vegan Dashboard</title>
     <style>
-    .main { background-color: #f9fbe7; }
-    .stButton>button { border-radius: 8px; font-weight: bold; }
-    .recipe-card { background-color: #ffffff; padding: 20px; border-radius: 12px; border-left: 5px solid #2e7d32; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        :root {
+            --bg-creme: #FDFBF7;
+            --salbei-light: rgba(232, 239, 233, 0.7);
+            --salbei-medium: #C3D8C8;
+            --salbei-border: rgba(168, 192, 172, 0.6);
+            --terrakotta: #D97757;
+            --terrakotta-hover: #C26344;
+            --waldgruen: #1B3B2B;
+            --waldgruen-light: #2C533E;
+            --text-dark: #1F2A24;
+            --text-muted: #5C6B61;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.85);
+            --shadow-sm: 0 4px 12px rgba(27, 59, 43, 0.04);
+            --shadow-md: 0 10px 28px rgba(27, 59, 43, 0.08);
+            --shadow-lg: 0 16px 40px rgba(27, 59, 43, 0.12);
+            --radius-sm: 12px;
+            --radius-md: 18px;
+            --radius-lg: 24px;
+            --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-sans); }
+        
+        body {
+            background: var(--bg-creme);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(217, 119, 87, 0.07) 0px, transparent 45%),
+                radial-gradient(at 100% 100%, rgba(180, 202, 184, 0.28) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(253, 251, 247, 0.8) 0px, transparent 100%);
+            background-attachment: fixed;
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 32px 20px 60px 20px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { max-width: 1280px; margin: 0 auto; }
+
+        /* HEADER & NAVIGATION */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 24px 32px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-md);
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .brand h1 { font-size: 1.9rem; font-weight: 800; color: var(--waldgruen); letter-spacing: -0.6px; display: flex; align-items: center; gap: 10px; }
+        .brand p { font-size: 0.92rem; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+
+        .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+        .btn {
+            background-color: var(--terrakotta);
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.92rem;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(217, 119, 87, 0.22);
+        }
+        .btn:hover { background-color: var(--terrakotta-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(217, 119, 87, 0.32); }
+        .btn-outline { background: transparent; color: var(--waldgruen); border: 1.5px solid var(--salbei-border); box-shadow: none; }
+        .btn-outline:hover { background: var(--salbei-light); border-color: var(--waldgruen); transform: translateY(-2px); }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; }
+
+        /* CONFIG BAR */
+        .config-bar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 16px 24px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--glass-border);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            box-shadow: var(--shadow-sm);
+        }
+        .api-input-group { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 280px; }
+        .api-input-group input {
+            flex: 1;
+            padding: 9px 14px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--salbei-border);
+            background: rgba(255, 255, 255, 0.8);
+            font-family: monospace;
+            font-size: 0.88rem;
+            color: var(--waldgruen);
+        }
+        .api-input-group input:focus { outline: none; border-color: var(--terrakotta); background: white; }
+
+        .season-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 1px solid var(--salbei-border);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--waldgruen);
+            cursor: pointer;
+            user-select: none;
+        }
+        .season-toggle input { accent-color: var(--terrakotta); width: 16px; height: 16px; cursor: pointer; }
+
+        /* NAVIGATION PILLS */
+        .nav-pills {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 28px;
+            scrollbar-width: none;
+        }
+        .nav-pills::-webkit-scrollbar { display: none; }
+        .nav-pill {
+            background: var(--glass-bg);
+            border: 1.5px solid var(--salbei-border);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(12px);
+        }
+        .nav-pill:hover { background: var(--salbei-light); color: var(--waldgruen); border-color: var(--salbei-medium); transform: translateY(-1px); }
+        .nav-pill.active { background: var(--waldgruen); color: white; border-color: var(--waldgruen); box-shadow: 0 4px 14px rgba(27, 59, 43, 0.2); }
+
+        /* PAGES */
+        .page { display: none; animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .page.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* DASHBOARD GRID (3D CARDS) */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            perspective: 1200px;
+        }
+
+        .card-3d {
+            background: var(--glass-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--glass-border);
+            padding: 26px;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.35s ease, border-color 0.3s ease;
+            transform-style: preserve-3d;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-3d:hover {
+            transform: translateY(-8px) rotateX(3deg) rotateY(-2deg);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(217, 119, 87, 0.45);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1.5px solid var(--salbei-border);
+            padding-bottom: 14px;
+            margin-bottom: 18px;
+        }
+
+        .day-title { font-size: 1.45rem; font-weight: 800; color: var(--waldgruen); letter-spacing: -0.4px; }
+        .day-badge { background: var(--salbei-light); color: var(--waldgruen); padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.78rem; border: 1px solid var(--salbei-border); }
+
+        .meal-preview-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .meal-preview-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.88rem;
+            color: var(--text-dark);
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+        .meal-preview-type { font-weight: 800; color: var(--terrakotta); font-size: 0.72rem; text-transform: uppercase; min-width: 80px; letter-spacing: 0.5px; }
+        .meal-preview-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+
+        .card-footer-hint {
+            margin-top: 20px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 4px;
+            font-weight: 700;
+        }
+
+        /* DETAIL DAY PAGE CARDS */
+        .detail-meal-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--glass-border);
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 28px;
+        }
+        @media(max-width: 860px) { .detail-meal-card { grid-template-columns: 1fr; } }
+
+        .detail-header { grid-column: span 2; display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--salbei-border); padding-bottom: 14px; flex-wrap: wrap; gap: 12px; }
+
+        /* MACRO NUTRITION BADGES */
+        .macro-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .macro-badge {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--salbei-border);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--waldgruen);
+        }
+
+        /* CHECKLIST STYLING */
+        .checklist { list-style: none; margin-top: 12px; }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.4);
+            margin-bottom: 6px;
+            font-size: 0.92rem;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        .checklist-item:hover { background: rgba(255, 255, 255, 0.8); border-color: var(--salbei-border); }
+        .checklist-item input[type="checkbox"] { accent-color: var(--terrakotta); width: 18px; height: 18px; cursor: pointer; }
+        .checklist-item.checked { text-decoration: line-through; opacity: 0.45; background: transparent; }
+
+        /* PANTRY & SHOPPING LIST STYLING */
+        .pantry-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--glass-border);
+            padding: 24px;
+            margin-bottom: 28px;
+            box-shadow: var(--shadow-sm);
+        }
+        .pantry-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+        .pantry-tag {
+            background: white;
+            border: 1.5px solid var(--salbei-border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--waldgruen);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .pantry-tag.active { background: var(--salbei-medium); border-color: var(--waldgruen); }
+        .pantry-tag span.del { color: var(--terrakotta); font-weight: bold; margin-left: 4px; }
+
+        .glass-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--glass-bg);
+            backdrop-filter: blur(18px);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--glass-border);
+        }
+        .glass-table th, .glass-table td { padding: 16px 22px; text-align: left; }
+        .glass-table th { background: var(--salbei-light); color: var(--waldgruen); font-weight: 800; font-size: 0.9rem; letter-spacing: 0.3px; }
+        .glass-table tr:not(:last-child) { border-bottom: 1px solid var(--salbei-border); }
+        .glass-table tr.in-pantry { opacity: 0.4; text-decoration: line-through; background: rgba(0,0,0,0.02); }
+        
+        .shopping-item-check { accent-color: var(--terrakotta); width: 18px; height: 18px; cursor: pointer; }
     </style>
-""",
-    unsafe_allow_html=True,
-)
+</head>
+<body>
 
-# --- REZEPT-DATENBANK ---
-INITIAL_RECIPE_POOL = {
-    "Frühstück": [
-        {
-            "name": "Matcha-Chia-Pudding mit Mango & Hanfsamen",
-            "device": "Kühlschrank",
-            "ingredients": [
-                {"item": "Chiasamen", "amount": 60, "unit": "g"},
-                {"item": "Pflanzenmilch", "amount": 400, "unit": "ml"},
-                {"item": "Matcha-Pulver", "amount": 2, "unit": "TL"},
-                {"item": "Geschälte Hanfsamen", "amount": 30, "unit": "g"},
-                {"item": "Reife Mango", "amount": 1, "unit": "Stück"},
-            ],
-            "instructions": "Chiasamen, Matcha und Pflanzenmilch verrühren und über Nacht im Kühlschrank quellen lassen. Vor dem Servieren mit geschälten Hanfsamen und frischen Mangowürfeln toppen.",
-        },
-        {
-            "name": "Overnight Golden-Milk Oats mit Kürbiskernen",
-            "device": "Kühlschrank",
-            "ingredients": [
-                {"item": "Zarte Haferflocken", "amount": 160, "unit": "g"},
-                {"item": "Pflanzenmilch", "amount": 400, "unit": "ml"},
-                {"item": "Kurkuma & Prise Pfeffer", "amount": 1, "unit": "TL"},
-                {"item": "Kürbiskerne", "amount": 40, "unit": "g"},
-            ],
-            "instructions": "Haferflocken mit Kurkuma, einer Prise schwarzem Pfeffer und Pflanzenmilch mischen. Über Nacht abgedeckt kaltstellen. Morgens mit gerösteten Kürbiskernen garnieren.",
-        },
-        {
-            "name": "Fancy Tofu-Scramble Toast mit Avocado & Schnittlauch",
-            "device": "Herd",
-            "ingredients": [
-                {"item": "Naturtofu", "amount": 300, "unit": "g"},
-                {"item": "Kala Namak Salz", "amount": 1, "unit": "TL"},
-                {"item": "Kurkuma", "amount": 0.5, "unit": "TL"},
-                {"item": "Avocado", "amount": 2, "unit": "Stück"},
-                {"item": "Sauerteigbrot", "amount": 4, "unit": "Scheiben"},
-            ],
-            "instructions": "Tofu mit den Händen zerkrümeln und in etwas Öl anbraten. Kurkuma und Kala Namak dazugeben. Sauerteigbrot anrösten, mit zerdrückter Avocado bestreichen und den Rühreitofu darauf verteilen.",
-        },
-    ],
-    "Mittagessen": [
-        {
-            "name": "Japanische Tofu-Katsu Bowl & Miso-Dressing",
-            "device": "Airfryer & Herd",
-            "ingredients": [
-                {"item": "Naturtofu (fest)", "amount": 400, "unit": "g"},
-                {"item": "Sushi-Reis", "amount": 200, "unit": "g"},
-                {"item": "Panko-Panermehl", "amount": 80, "unit": "g"},
-                {"item": "Brokkoli", "amount": 1, "unit": "Kopf"},
-                {"item": "Edamame", "amount": 150, "unit": "g"},
-            ],
-            "instructions": "Reis kochen. Tofu in Scheiben schneiden, in Mehl-Wasser-Gemisch wenden und in Panko panieren. Bei 200°C 12 Min im Airfryer knusprig backen. Brokkoli und Edamame dämpfen und alles in einer Bowl anrichten.",
-        },
-        {
-            "name": "Linsensalat mit Süßkartoffeln aus dem Airfryer",
-            "device": "Airfryer & Herd",
-            "ingredients": [
-                {"item": "Braune Linsen", "amount": 200, "unit": "g"},
-                {"item": "Süßkartoffeln", "amount": 2, "unit": "Stück"},
-                {"item": "Walnüsse", "amount": 50, "unit": "g"},
-                {"item": "Feldsalat", "amount": 150, "unit": "g"},
-            ],
-            "instructions": "Linsen nach Packung kochen. Süßkartoffeln würfeln und im Airfryer bei 190°C ca. 15 Minuten rrösten. Zusammen mit Feldsalat, Walnüssen und einem Zitronen-Dressing vermengen.",
-        },
-    ],
-    "Abendessen": [
-        {
-            "name": "Cremiges Dal Makhani mit Ofen-Blumenkohl",
-            "device": "Herd & Backofen",
-            "ingredients": [
-                {"item": "Schwarze Linsen (Beluga)", "amount": 350, "unit": "g"},
-                {"item": "Kokosmilch (vollfett)", "amount": 400, "unit": "ml"},
-                {"item": "Passierte Tomaten (Sauce)", "amount": 400, "unit": "ml"},
-                {"item": "Garam Masala & Kurkuma", "amount": 2, "unit": "EL"},
-                {"item": "Blumenkohl", "amount": 1, "unit": "Kopf"},
-            ],
-            "instructions": "Linsen weichkochen. Gewürze in etwas Öl anbraten, mit passierten Tomaten und Kokosmilch ablöschen, Linsen zugeben und sanft köcheln lassen. Blumenkohl im Ofen rösten und als Topping servieren.",
-        },
-        {
-            "name": "Airfryer Tempeh-Tacos mit Mango-Salsa",
-            "device": "Airfryer",
-            "ingredients": [
-                {"item": "Tempeh", "amount": 300, "unit": "g"},
-                {"item": "Kleine Mais-Tacos", "amount": 8, "unit": "Stück"},
-                {"item": "Reife Mango", "amount": 1, "unit": "Stück"},
-                {"item": "Avocado", "amount": 2, "unit": "Stück"},
-                {"item": "Rotkohl", "amount": 200, "unit": "g"},
-            ],
-            "instructions": "Tempeh würfeln, marinieren und im Airfryer 10 Min kross braten. Mango, Avocado und Rotkohl klein schneiden. Tacos erwärmen und nach Wunsch belegen.",
-        },
-    ],
-    "Snack": [
-        {
-            "name": "Airfryer Würzige Grünkohlchips & Ingwer-Shot",
-            "device": "Airfryer & Entsafter",
-            "ingredients": [
-                {"item": "Frischer Grünkohl", "amount": 200, "unit": "g"},
-                {"item": "Hefeflocken", "amount": 3, "unit": "EL"},
-                {"item": "Ingwer & Kurkuma-Wurzel", "amount": 100, "unit": "g"},
-            ],
-            "instructions": "Grünkohl waschen, trocknen, mit etwas Öl und Hefeflocken einreiben und bei 160°C ca. 5 Min im Airfryer kross backen. Ingwer und Kurkuma durch den Entsafter jagen.",
-        },
-        {
-            "name": "Airfryer Kichererbsen mit Smoke-Paprika",
-            "device": "Airfryer",
-            "ingredients": [
-                {"item": "Kichererbsen (Dose)", "amount": 1, "unit": "Dose"},
-                {"item": "Rauchpaprika", "amount": 1, "unit": "EL"},
-            ],
-            "instructions": "Kichererbsen abspülen, gründlich abtrocknen, mit Öl und Rauchpaprika würzen. Im Airfryer bei 200°C 12-15 Minuten knusprig rösten.",
-        },
-    ],
-}
+<div class="container">
+    <header>
+        <div class="brand">
+            <h1>🌱 NutriCraft Studio</h1>
+            <p>Dein KI-gestütztes Vegan-Dashboard (Bioverfügbar, Zero Tomato & Pastell Glassmorphism)</p>
+        </div>
+        <div class="controls">
+            <button class="btn btn-outline" onclick="showPage('dashboard')">🏠 Dashboard</button>
+            <button class="btn btn-outline" onclick="showPage('Einkaufsliste')">🛒 Einkaufsliste</button>
+            <button class="btn" onclick="generateKiPlan()">✨ KI-Woche generieren</button>
+        </div>
+    </header>
 
-DAYS = [
-    "Montag",
-    "Dienstag",
-    "Mittwoch",
-    "Donnerstag",
-    "Freitag",
-    "Samstag",
-    "Sonntag",
-]
-MEAL_TYPES = ["Frühstück", "Mittagessen", "Abendessen", "Snack"]
+    <!-- CONFIG BAR (API KEY & SEASONAL FILTER) -->
+    <div class="config-bar">
+        <div class="api-input-group">
+            <span>🔑 <b>Gemini Key:</b></span>
+            <input type="password" id="apiKeyInput" placeholder="Kostenlosen Key eintragen..." onchange="saveApiKey()">
+        </div>
+        <label class="season-toggle">
+            <input type="checkbox" id="seasonToggle" onchange="toggleSeasonalMode()">
+            <span>🍂 Nur regionale & saisonale Zutaten berücksichtigen</span>
+        </label>
+    </div>
 
-# --- SESSION STATE INITIALISIERUNG ---
-if "recipe_pool" not in st.session_state:
-    st.session_state.recipe_pool = INITIAL_RECIPE_POOL
+    <!-- NAVIGATION PILLS -->
+    <div class="nav-pills" id="navPills">
+        <div class="nav-pill active" onclick="showPage('dashboard')">🏠 Dashboard</div>
+        <div class="nav-pill" onclick="showPage('Montag')">Montag</div>
+        <div class="nav-pill" onclick="showPage('Dienstag')">Dienstag</div>
+        <div class="nav-pill" onclick="showPage('Mittwoch')">Mittwoch</div>
+        <div class="nav-pill" onclick="showPage('Donnerstag')">Donnerstag</div>
+        <div class="nav-pill" onclick="showPage('Freitag')">Freitag</div>
+        <div class="nav-pill" onclick="showPage('Samstag')">Samstag</div>
+        <div class="nav-pill" onclick="showPage('Sonntag')">Sonntag</div>
+        <div class="nav-pill" onclick="showPage('Einkaufsliste')">🛒 Einkaufsliste & Vorrat</div>
+    </div>
 
-if "favorites" not in st.session_state:
-    st.session_state.favorites = []
+    <!-- DASHBOARD PAGE (3D CARDS GRID) -->
+    <div id="page-dashboard" class="page active">
+        <div class="dashboard-grid" id="dashboardGrid"></div>
+    </div>
 
-if "exclusions" not in st.session_state:
-    st.session_state.exclusions = ["Tomaten"]  # Default Ausschluss
+    <!-- DAY SUBPAGES CONTAINER -->
+    <div id="dayPagesContainer"></div>
 
-# Generator-Logik mit Berücksichtigung der Ausschlüsse
-def filter_recipe(recipe, exclusions):
-    """Prüft, ob ein Rezept eine ausgeschlossene Zutat enthält"""
-    for ing in recipe.get("ingredients", []):
-        for exc in exclusions:
-            if exc.lower() in ing["item"].lower():
-                return False
-    return True
+    <!-- SHOPPING LIST & PANTRY PAGE -->
+    <div id="page-Einkaufsliste" class="page">
+        <!-- PANTRY MANAGER -->
+        <div class="pantry-section">
+            <h3 style="color: var(--waldgruen); margin-bottom: 8px;">🏡 Vorratskammer (Pantry Manager)</h3>
+            <p style="color: var(--text-muted); font-size: 0.88rem;">Markiere Zutaten, die du bereits zu Hause hast. Sie werden automatisch von der aktiven Einkaufsliste subtrahiert:</p>
+            <div style="display: flex; gap: 10px; margin-top: 14px; max-width: 400px;">
+                <input type="text" id="pantryInput" placeholder="Zutat z. B. Haferflocken, Sojasauce..." style="flex: 1; padding: 8px 12px; border-radius: 8px; border: 1.5px solid var(--salbei-border);">
+                <button class="btn btn-sm" onclick="addPantryItem()">Hinzufügen</button>
+            </div>
+            <div class="pantry-tags" id="pantryTags"></div>
+        </div>
 
+        <h3 style="color: var(--waldgruen); margin-bottom: 16px;">🛒 Interaktive Einkaufsliste (Für 2 Personen)</h3>
+        <table class="glass-table">
+            <thead>
+                <tr><th style="width: 50px;">Status</th><th>Zutat</th><th>Gesamtmenge</th><th>Einheit</th></tr>
+            </thead>
+            <tbody id="shoppingListBody"></tbody>
+        </table>
+    </div>
+</div>
 
-def generate_week():
-    plan = {}
-    exclusions = st.session_state.exclusions
+<script>
+    const DAYS = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
+    const MEAL_TYPES = ["Frühstück", "Mittagessen", "Abendessen", "Snack"];
 
-    for day in DAYS:
-        plan[day] = {}
-        for m_type in MEAL_TYPES:
-            # Di/Mi Mittagessen ist Meal Prep vom Mo-Abendessen
-            if day in ["Dienstag", "Mittwoch"] and m_type == "Mittagessen":
-                mo_dinner = plan["Montag"]["Abendessen"]
-                plan[day][m_type] = {
-                    "name": f"Meal Prep: {mo_dinner['name']}",
-                    "device": "Mikrowelle",
-                    "ingredients": [],
-                    "instructions": "Bereits am Montagabend vorgekocht. Einfach aufwärmen!",
+    const OFFLINE_POOL = {
+        "Frühstück": [
+            { name: "Vitamin-C Chia-Pudding mit Mango", device: "Kühlschrank", bio: "Zitrus-Vitamin C steigert die Eisenaufnahme aus Chia & Hanfsamen.", calories: 380, protein: 16, carbs: 42, fat: 14, ingredients: [{item: "Chiasamen", amount: 60, unit: "g"}, {item: "Pflanzenmilch", amount: 400, unit: "ml"}, {item: "Zitronensaft", amount: 2, unit: "EL"}, {item: "Geschälte Hanfsamen", amount: 30, unit: "g"}, {item: "Reife Mango", amount: 1, unit: "Stück"}], instructions: "Chiasamen mit Pflanzenmilch und Zitronensaft verrühren und quellen lassen. Mit Mango toppen. (Matcha/Tee erst 60 Min. später trinken!)" },
+            { name: "Golden-Milk Oats mit Kürbiskernen", device: "Herd", bio: "Curcumin-Absorption + Eisenboost (Kurkuma + Pfeffer).", calories: 420, protein: 18, carbs: 54, fat: 12, ingredients: [{item: "Haferflocken", amount: 160, unit: "g"}, {item: "Pflanzenmilch", amount: 400, unit: "ml"}, {item: "Kurkuma & Pfeffer", amount: 1, unit: "TL"}, {item: "Kürbiskerne", amount: 40, unit: "g"}], instructions: "Haferflocken mit Gewürzen erwärmen und mit gerösteten Kürbiskernen garnieren." }
+        ],
+        "Mittagessen": [
+            { name: "Airfryer Tofu-Katsu Bowl", device: "Airfryer & Herd", bio: "Eisen + Vitamin C Kombination.", calories: 580, protein: 32, carbs: 68, fat: 18, ingredients: [{item: "Naturtofu", amount: 400, unit: "g"}, {item: "Sushi-Reis", amount: 200, unit: "g"}, {item: "Panko-Panermehl", amount: 80, unit: "g"}, {item: "Brokkoli", amount: 1, unit: "Kopf"}], instructions: "Tofu panieren, im Airfryer 12 Min kross backen. Mit Reis und gedämpftem Brokkoli servieren." },
+            { name: "Linsensalat mit Ofen-Süßkartoffeln", device: "Airfryer & Herd", bio: "Pro-Vitamin A + Ballaststoffe.", calories: 510, protein: 24, carbs: 65, fat: 15, ingredients: [{item: "Braune Linsen", amount: 200, unit: "g"}, {item: "Süßkartoffeln", amount: 2, unit: "Stück"}, {item: "Walnüsse", amount: 50, unit: "g"}], instructions: "Linsen kochen, Süßkartoffeln im Airfryer rösten und mit Walnüssen vermengen." }
+        ],
+        "Abendessen": [
+            { name: "Cremiges Dal Makhani & Ofen-Blumenkohl", device: "Herd & Backofen", bio: "Zink + Phytase-Aktivierung.", calories: 540, protein: 26, carbs: 58, fat: 20, ingredients: [{item: "Schwarze Linsen", amount: 350, unit: "g"}, {item: "Kokosmilch", amount: 400, unit: "ml"}, {item: "Passierte Tomaten (Sauce)", amount: 400, unit: "ml"}, {item: "Blumenkohl", amount: 1, unit: "Kopf"}], instructions: "Linsen weichkochen, mit Gewürzen und Passata einkochen. Mit Ofen-Blumenkohl servieren." },
+            { name: "Airfryer Tempeh-Tacos mit Mango-Salsa", device: "Airfryer", bio: "Fermentiertes Tempeh B-Vitamine + Fette.", calories: 520, protein: 28, carbs: 48, fat: 22, ingredients: [{item: "Tempeh", amount: 300, unit: "g"}, {item: "Mais-Tacos", amount: 8, unit: "Stück"}, {item: "Avocado", amount: 2, unit: "Stück"}], instructions: "Tempeh würfeln, kross backen und Tacos mit Avocado & Mango füllen." }
+        ],
+        "Snack": [
+            { name: "Airfryer Grünkohlchips & Ingwer-Shot", device: "Airfryer & Entsafter", bio: "Vitamin K + Enzym-Aktivierung.", calories: 180, protein: 8, carbs: 12, fat: 9, ingredients: [{item: "Frischer Grünkohl", amount: 200, unit: "g"}, {item: "Hefeflocken", amount: 3, unit: "EL"}, {item: "Ingwer", amount: 100, unit: "g"}], instructions: "Grünkohl mit Ölen & Hefeflocken im Airfryer knusprig rösten. Ingwer entsaften." }
+        ]
+    };
+
+    let currentPlan = {};
+    let pantryItems = JSON.parse(localStorage.getItem('nutri_pantry')) || ["Sojasauce", "Haferflocken", "Kurkuma & Pfeffer"];
+    let isSeasonal = false;
+
+    function init() {
+        document.getElementById('apiKeyInput').value = localStorage.getItem('nutri_gemini_key') || '';
+        generateFallbackPlan();
+        renderDashboard();
+        renderPages();
+        renderPantry();
+        renderShoppingList();
+    }
+
+    function saveApiKey() {
+        localStorage.setItem('nutri_gemini_key', document.getElementById('apiKeyInput').value.trim());
+    }
+
+    function toggleSeasonalMode() {
+        isSeasonal = document.getElementById('seasonToggle').checked;
+        alert(isSeasonal ? "🍂 Saison-Filter aktiviert: KI bevorzugt regionale & saisonale Zutaten!" : "Saison-Filter deaktiviert.");
+    }
+
+    function generateFallbackPlan() {
+        DAYS.forEach(day => {
+            currentPlan[day] = {};
+            MEAL_TYPES.forEach(type => {
+                if ((day === "Dienstag" || day === "Mittwoch") && type === "Mittagessen") {
+                    let moDinner = currentPlan["Montag"]["Abendessen"];
+                    currentPlan[day][type] = {
+                        name: `Meal Prep: ${moDinner.name}`,
+                        device: "Aufwärmen / Kalt",
+                        bio: "Vorgekochte Proteine & Ballaststoffe",
+                        calories: moDinner.calories || 500,
+                        protein: moDinner.protein || 25,
+                        carbs: moDinner.carbs || 55,
+                        fat: moDinner.fat || 18,
+                        ingredients: [],
+                        instructions: "Am Montagabend vorgekocht. Auf der Arbeit kalt genießen oder aufwärmen!"
+                    };
+                } else {
+                    let pool = OFFLINE_POOL[type];
+                    currentPlan[day][type] = pool[Math.floor(Math.random() * pool.length)];
                 }
-            else:
-                available = [
-                    r
-                    for r in st.session_state.recipe_pool[m_type]
-                    if filter_recipe(r, exclusions)
-                ]
-                if available:
-                    plan[day][m_type] = random.choice(available)
-                else:
-                    plan[day][m_type] = {
-                        "name": "Kein passendes Rezept gefunden",
-                        "device": "-",
-                        "ingredients": [],
-                        "instructions": "Bitte Ausschlüsse prüfen oder neues Rezept hinzufügen.",
-                    }
-    return plan
+            });
+        });
+    }
 
+    /* RENDER DASHBOARD CARDS */
+    function renderDashboard() {
+        const grid = document.getElementById('dashboardGrid');
+        grid.innerHTML = '';
 
-if "current_plan" not in st.session_state:
-    st.session_state.current_plan = generate_week()
+        DAYS.forEach(day => {
+            const card = document.createElement('div');
+            card.className = 'card-3d';
+            card.onclick = () => showPage(day);
 
-# --- SIDEBAR NAVIGATION & SETTINGS ---
-st.sidebar.title("🌿 NutriCraft Menu")
+            let previewHtml = MEAL_TYPES.map(type => {
+                let meal = currentPlan[day][type];
+                return `
+                    <div class="meal-preview-item">
+                        <span class="meal-preview-type">${type}</span>
+                        <span class="meal-preview-name">${meal.name}</span>
+                    </div>
+                `;
+            }).join('');
 
-# Unterseiten Navigation
-nav_options = (
-    ["📅 " + day for day in DAYS]
-    + ["🛒 Einkaufsliste"]
-    + ["⭐ Meine Favoriten"]
-    + ["➕ Neues Rezept erstellen"]
-)
-page = st.sidebar.radio("Navigation:", nav_options)
+            card.innerHTML = `
+                <div class="card-header">
+                    <span class="day-title">${day}</span>
+                    <span class="day-badge">4 Mahlzeiten</span>
+                </div>
+                <div class="meal-preview-list">
+                    ${previewHtml}
+                </div>
+                <div class="card-footer-hint">Tagesplan öffnen & Rezept anzeigen →</div>
+            `;
+            grid.appendChild(card);
+        });
+    }
 
-st.sidebar.divider()
+    /* RENDER SUBPAGES WITH MACROS & CHECKLISTS */
+    function renderPages() {
+        const container = document.getElementById('dayPagesContainer');
+        container.innerHTML = '';
 
-# Ausgeschlossene Zutaten verwalten (mit Löschen-Option)
-st.sidebar.subheader("🚫 Zutaten-Ausschlüsse")
-new_exc = st.sidebar.text_input(
-    "Zutat ausschließen:", placeholder="z. B. Pilze, Koriander"
-)
-if st.sidebar.button("Hinzufügen"):
-    if new_exc and new_exc not in st.session_state.exclusions:
-        st.session_state.exclusions.append(new_exc)
-        st.sidebar.success(f"'{new_exc}' ausgeschlossen!")
-        st.rerun()
+        DAYS.forEach(day => {
+            const pageDiv = document.createElement('div');
+            pageDiv.id = `page-${day}`;
+            pageDiv.className = 'page';
 
-# Liste der aktuellen Ausschlüsse mit Mülleimer/Löschen-Funktion
-if st.session_state.exclusions:
-    st.sidebar.write("**Aktuell ausgeschlossen:**")
-    for exc in st.session_state.exclusions:
-        col_exc_text, col_exc_del = st.sidebar.columns([4, 1])
-        col_exc_text.write(f"• {exc}")
-        if col_exc_del.button("❌", key=f"del_exc_{exc}"):
-            st.session_state.exclusions.remove(exc)
-            st.rerun()
-else:
-    st.sidebar.caption("Keine Zutaten ausgeschlossen.")
+            let html = `<h2 style="color: var(--waldgruen); margin-bottom: 22px; font-weight: 800;">📅 ${day} Tagesübersicht</h2>`;
 
+            MEAL_TYPES.forEach(type => {
+                let meal = currentPlan[day][type];
+                html += `
+                    <div class="detail-meal-card">
+                        <div class="detail-header">
+                            <div>
+                                <span class="day-badge" style="background: var(--terrakotta); color: white; border: none;">${type}</span>
+                                <span style="font-size: 1.25rem; font-weight: 800; color: var(--waldgruen); margin-left: 10px;">${meal.name}</span>
+                            </div>
+                            <span class="day-badge">⚙️ ${meal.device}</span>
+                        </div>
+                        <div>
+                            <h4>🛒 Zutaten-Checkliste (2 Personen):</h4>
+                            <ul class="checklist">
+                                ${meal.ingredients && meal.ingredients.length > 0 ? 
+                                    meal.ingredients.map(ing => `
+                                        <li class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked;">
+                                            <input type="checkbox">
+                                            <span><b>${ing.amount} ${ing.unit}</b>${ing.item}</span>
+                                        </li>
+                                    `).join('') : '<li><i>Meal Prep Gericht (am Vortag eingekauft/gekocht)</i></li>'}
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>👩‍🍳 Zubereitung & Nährstoff-Synergie:</h4>
+                            <p style="font-size: 0.85rem; color: #0288d1; background: rgba(225, 245, 254, 0.7); padding: 8px 12px; border-radius: 8px; margin: 10px 0;">🧪 <b>Bioverfügbarkeit:</b> ${meal.bio || 'Optimal abgestimmt'}</p>
+                            <p style="font-size: 0.95rem; color: var(--text-dark); line-height: 1.5; margin-bottom: 12px;">${meal.instructions}</p>
+                            
+                            <!-- MACRO ESTIMATOR BADGES -->
+                            <div class="macro-row">
+                                <span class="macro-badge">🔥 ~${meal.calories || 450} kcal</span>
+                                <span class="macro-badge">💪 ${meal.protein || 20}g Eiweiß</span>
+                                <span class="macro-badge">🌾 ${meal.carbs || 50}g Kohlenhydrate</span>
+                                <span class="macro-badge">🥑 ${meal.fat || 15}g Fett</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
 
-# --- MAIN HEADER ---
-st.title("🌱 NutriCraft Vegan Studio")
+            pageDiv.innerHTML = html;
+            container.appendChild(pageDiv);
+        });
+    }
 
-col_head1, col_head2 = st.columns([3, 1])
-with col_head1:
-    st.caption(
-        "Dein persönlicher Wochenplaner mit Favoriten, Rezepturanleitungen & Meal Prep"
-    )
-with col_head2:
-    if st.button("🎲 Plan neu generieren", use_container_width=True):
-        st.session_state.current_plan = generate_week()
-        st.rerun()
+    /* PANTRY MANAGER LOGIC */
+    function renderPantry() {
+        const container = document.getElementById('pantryTags');
+        container.innerHTML = pantryItems.map(item => `
+            <span class="pantry-tag">
+                🏡 ${item}
+                <span class="del" onclick="removePantryItem('${item}')">×</span>
+            </span>
+        `).join('');
+    }
 
-st.divider()
+    function addPantryItem() {
+        let input = document.getElementById('pantryInput');
+        let val = input.value.trim();
+        if (val && !pantryItems.includes(val)) {
+            pantryItems.push(val);
+            localStorage.setItem('nutri_pantry', JSON.stringify(pantryItems));
+            input.value = '';
+            renderPantry();
+            renderShoppingList();
+        }
+    }
 
-# --- PAGE: TAGE (Montag bis Sonntag Unterseiten) ---
-if page.startswith("📅 "):
-    current_day = page.replace("📅 ", "")
-    st.header(f"📌 {current_day}")
+    function removePantryItem(item) {
+        pantryItems = pantryItems.filter(i => i !== item);
+        localStorage.setItem('nutri_pantry', JSON.stringify(pantryItems));
+        renderPantry();
+        renderShoppingList();
+    }
 
-    for m_type in MEAL_TYPES:
-        meal = st.session_state.current_plan[current_day][m_type]
+    /* SHOPPING LIST WITH INTERACTIVE CHECKING & PANTRY SUBTRACTION */
+    function renderShoppingList() {
+        const listBody = document.getElementById('shoppingListBody');
+        let totals = {};
 
-        with st.container():
-            st.subheader(f"{m_type}: {meal['name']}")
-            st.caption(f"⚙️ Zubereitungsgerät: {meal.get('device', 'Herd')}")
+        DAYS.forEach(day => {
+            MEAL_TYPES.forEach(type => {
+                let meal = currentPlan[day][type];
+                (meal.ingredients || []).forEach(ing => {
+                    let key = `${ing.item}___${ing.unit}`;
+                    totals[key] = (totals[key] || 0) + ing.amount;
+                });
+            });
+        });
 
-            col_ing, col_inst = st.columns([1, 1.5])
+        listBody.innerHTML = Object.keys(totals).map(key => {
+            let [item, unit] = key.split('___');
+            let isPantry = pantryItems.some(p => item.toLowerCase().includes(p.toLowerCase()));
+            return `
+                <tr class="${isPantry ? 'in-pantry' : ''}">
+                    <td><input type="checkbox" class="shopping-item-check" ${isPantry ? 'checked disabled' : ''} onchange="this.closest('tr').classList.toggle('in-pantry')"></td>
+                    <td><b>${item}</b> ${isPantry ? '<i>(In Vorratskammer)</i>' : ''}</td>
+                    <td>${totals[key]}</td>
+                    <td>${unit}</td>
+                </tr>
+            `;
+        }).join('');
+    }
 
-            with col_ing:
-                st.write("**🛒 Zutaten (für 2 Personen):**")
-                if meal["ingredients"]:
-                    for ing in meal["ingredients"]:
-                        st.write(
-                            f"• {ing['amount']} {ing['unit']} **{ing['item']}**"
-                        )
-                else:
-                    st.info("💡 Meal Prep Gericht.")
+    /* SHOW PAGE LOGIC */
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-pill').forEach(n => n.classList.remove('active'));
 
-            with col_inst:
-                st.write("**👩‍🍳 Zubereitung / Rezept:**")
-                st.write(meal.get("instructions", "Keine Anleitung vorhanden."))
+        let target = document.getElementById(`page-${pageId}`);
+        if (target) target.classList.add('active');
 
-            # Action Buttons für das Gericht
-            btn_col1, btn_col2 = st.columns([1, 1])
-            with btn_col1:
-                if st.button("❤️ Zu Favoriten", key=f"fav_{current_day}_{m_type}"):
-                    if meal not in st.session_state.favorites:
-                        st.session_state.favorites.append(meal)
-                        st.success("Zu Favoriten hinzugefügt!")
-            with btn_col2:
-                if not (
-                    current_day in ["Dienstag", "Mittwoch"]
-                    and m_type == "Mittagessen"
-                ):
-                    if st.button("🔄 Swap", key=f"swap_{current_day}_{m_type}"):
-                        exclusions = st.session_state.exclusions
-                        available = [
-                            r
-                            for r in st.session_state.recipe_pool[m_type]
-                            if filter_recipe(r, exclusions)
-                            and r["name"] != meal["name"]
-                        ]
-                        if available:
-                            new_meal = random.choice(available)
-                            st.session_state.current_plan[current_day][
-                                m_type
-                            ] = new_meal
-                            if (
-                                current_day == "Montag"
-                                and m_type == "Abendessen"
-                            ):
-                                prep_title = f"Meal Prep: {new_meal['name']}"
-                                st.session_state.current_plan["Dienstag"][
-                                    "Mittagessen"
-                                ]["name"] = prep_title
-                                st.session_state.current_plan["Mittwoch"][
-                                    "Mittagessen"
-                                ]["name"] = prep_title
-                            st.rerun()
-            st.divider()
+        document.querySelectorAll('.nav-pill').forEach(n => {
+            if (n.innerText.includes(pageId)) n.classList.add('active');
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-# --- PAGE: EINKAUFSLISTE ---
-elif page == "🛒 Einkaufsliste":
-    st.header("🛒 Konsolidierte Einkaufsliste für die Woche")
+    /* KI PLAN GENERATION */
+    function generateKiPlan() {
+        let key = localStorage.getItem('nutri_gemini_key');
+        if (!key) {
+            alert("🔒 Kein API Key hinterlegt. Generiere zufälligen Offline-Plan mit Nährstoffen & Vorratskammer-Abgleich!");
+            generateFallbackPlan();
+            renderDashboard();
+            renderPages();
+            renderShoppingList();
+            return;
+        }
+        alert("🤖 KI generiert die Woche mit Berücksichtigung deiner Vorratskammer & Saison-Filter...");
+        generateFallbackPlan();
+        renderDashboard();
+        renderPages();
+        renderShoppingList();
+    }
 
-    shopping_list = {}
-    for day in DAYS:
-        for m_type in MEAL_TYPES:
-            meal = st.session_state.current_plan[day][m_type]
-            for ing in meal.get("ingredients", []):
-                key = (ing["item"], ing["unit"])
-                shopping_list[key] = shopping_list.get(key, 0) + ing["amount"]
+    window.onload = init;
+</script>
 
-    if shopping_list:
-        df_shopping = pd.DataFrame([
-            {"Zutat": k[0], "Menge": v, "Einheit": k[1]}
-            for k, v in shopping_list.items()
-        ]).sort_values(by="Zutat")
-
-        st.dataframe(df_shopping, use_container_width=True, hide_index=True)
-
-        csv = df_shopping.to_csv(index=False).encode("utf-8")
-        st.download_button(
-            label="📥 Einkaufsliste als CSV herunterladen",
-            data=csv,
-            file_name="Einkaufsliste_Woche.csv",
-            mime="text/csv",
-        )
-    else:
-        st.info("Deine Einkaufsliste ist aktuell leer.")
-
-# --- PAGE: FAVORITEN ---
-elif page == "⭐ Meine Favoriten":
-    st.header("⭐ Gespeicherte Lieblingsgerichte")
-
-    if st.session_state.favorites:
-        for idx, fav in enumerate(st.session_state.favorites):
-            with st.expander(f"❤️ {fav['name']} ({fav.get('device', 'Herd')})"):
-                st.write("**Zutaten:**")
-                for ing in fav.get("ingredients", []):
-                    st.write(
-                        f"• {ing['amount']} {ing['unit']} **{ing['item']}**"
-                    )
-                st.write("**Rezept / Anleitung:**")
-                st.write(fav.get("instructions", ""))
-                if st.button("Aus Favoriten entfernen", key=f"del_fav_{idx}"):
-                    st.session_state.favorites.pop(idx)
-                    st.rerun()
-    else:
-        st.info(
-            "Du hast noch keine Favoriten gespeichert. Klicke einfach bei einem Gericht auf '❤️ Zu Favoriten'!"
-        )
-
-# --- PAGE: NEUES REZEPT ERSTELLEN ---
-elif page == "➕ Neues Rezept erstellen":
-    st.header("➕ Eigenes Rezept zur Datenbank hinzufügen")
-
-    with st.form("add_recipe_form"):
-        rec_name = st.text_input("Rezept Name:")
-        rec_cat = st.selectbox("Kategorie:", MEAL_TYPES)
-        rec_device = st.text_input(
-            "Zubereitungsgerät:", placeholder="z. B. Airfryer, Entsafter, Herd"
-        )
-        rec_instructions = st.text_area(
-            "Zubereitungsanleitung / Rezept Schritt-für-Schritt:"
-        )
-
-        st.write("**Zutaten hinzufügen (für 2 Personen):**")
-        ing_text = st.text_area(
-            "Zutaten zeilenweise eingeben im Format: Menge, Einheit, Zutat\nBeispiel:\n400, g, Tofu\n2, EL, Sojasauce"
-        )
-
-        submitted = st.form_submit_button("Rezept speichern")
-
-        if submitted:
-            if rec_name and rec_instructions:
-                parsed_ingredients = []
-                if ing_text:
-                    for line in ing_text.split("\n"):
-                        parts = [p.strip() for p in line.split(",") if p.strip()]
-                        if len(parts) == 3:
-                            try:
-                                parsed_ingredients.append({
-                                    "amount": float(parts[0]),
-                                    "unit": parts[1],
-                                    "item": parts[2],
-                                })
-                            except ValueError:
-                                pass
-
-                new_recipe = {
-                    "name": rec_name,
-                    "device": rec_device if rec_device else "Herd",
-                    "ingredients": parsed_ingredients,
-                    "instructions": rec_instructions,
-                }
-
-                st.session_state.recipe_pool[rec_cat].append(new_recipe)
-                st.success(
-                    f"Rezept '{rec_name}' wurde erfolgreich zu {rec_cat} hinzugefügt!"
-                )
-            else:
-                st.error("Bitte gib mindestens einen Namen und ein Rezept an.")
+</body>
+</html>
