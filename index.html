@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriCraft Studio — KI Vegan Planer</title>
+    <title>NutriCraft Studio | Veganer Wochenplan</title>
     <!-- Chart.js für Makro-Grafiken & Canvas-Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -24,7 +24,8 @@
             --radius-lg: 24px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :focus-visible { outline: 3px solid var(--terrakotta); outline-offset: 3px; }
         
         body {
             background-color: var(--bg-salbei);
@@ -34,10 +35,23 @@
             background-attachment: fixed;
             color: var(--text-dark);
             min-height: 100vh;
-            padding: 32px 20px;
+            padding: 28px 20px 56px;
+            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
         }
 
         .container { max-width: 1240px; margin: 0 auto; }
+        .eyebrow { color: var(--terrakotta); font-size: 0.75rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
+        .brand-lockup { display: flex; align-items: center; gap: 16px; }
+        .meal-mark { position: relative; width: 72px; height: 68px; flex: 0 0 72px; perspective: 260px; animation: bowl-float 4.5s ease-in-out infinite; }
+        .meal-bowl { position: absolute; left: 3px; bottom: 1px; width: 52px; height: 24px; border-radius: 0 0 26px 26px; background: linear-gradient(145deg, #e58a66, #b84d3b); transform: rotateX(16deg); box-shadow: 8px 9px 12px rgba(27, 59, 43, 0.2), inset 5px 0 rgba(255,255,255,0.22); }
+        .meal-bowl::before { content: ""; position: absolute; left: -2px; top: -7px; width: 56px; height: 15px; border-radius: 50%; background: #8a4736; box-shadow: inset 0 4px rgba(33, 62, 43, 0.25); }
+        .meal-bowl::after { content: ""; position: absolute; left: 3px; top: -4px; width: 50px; height: 10px; border-radius: 50%; background: radial-gradient(circle at 25% 45%, #e3a43e 0 12%, transparent 13%), radial-gradient(circle at 60% 40%, #78a950 0 14%, transparent 15%), radial-gradient(circle at 77% 62%, #d66d4c 0 12%, transparent 13%), #f1d49d; }
+        .meal-leaf { position: absolute; left: 30px; bottom: 43px; width: 16px; height: 23px; border-radius: 100% 0 100% 0; background: linear-gradient(135deg, #9fcf76, #2d744b); transform: rotate(28deg); transform-origin: bottom left; box-shadow: inset 2px 2px rgba(255,255,255,0.25); }
+        .meal-leaf::after { content: ""; position: absolute; left: 7px; top: 3px; width: 2px; height: 18px; background: rgba(255,255,255,0.42); transform: rotate(22deg); }
+        .meal-fork { position: absolute; right: 1px; top: 2px; width: 3px; height: 34px; border-radius: 4px; background: #6d7f70; transform: rotate(26deg); box-shadow: 2px 2px 5px rgba(27, 59, 43, 0.18); }
+        .meal-fork::before { content: ""; position: absolute; top: -4px; left: -3px; width: 9px; height: 8px; border-left: 2px solid #6d7f70; border-right: 2px solid #6d7f70; }
+        @keyframes bowl-float { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-4px) rotate(2deg); } }
+        @media (prefers-reduced-motion: reduce) { .meal-mark { animation: none; } }
 
         header {
             background: var(--creme-card);
@@ -52,18 +66,20 @@
             flex-wrap: wrap; gap: 16px;
         }
 
-        .brand h1 { font-size: 1.9rem; color: var(--waldgruen); font-weight: 800; letter-spacing: -0.5px; }
+        .brand h1 { font-size: clamp(1.55rem, 3vw, 2.15rem); color: var(--waldgruen); font-weight: 800; letter-spacing: 0; }
         .brand p { font-size: 0.92rem; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
 
         .btn {
             background-color: var(--terrakotta); color: white; border: none;
-            padding: 12px 22px; border-radius: 16px; font-weight: 700; font-size: 0.9rem;
+            padding: 12px 18px; border-radius: 12px; font-weight: 700; font-size: 0.9rem;
             cursor: pointer; transition: all 0.25s ease;
             box-shadow: 0 4px 14px rgba(217, 119, 87, 0.25);
         }
         .btn:hover { background-color: var(--terrakotta-hover); transform: translateY(-2px); }
         .btn-outline { background: rgba(255, 255, 255, 0.5); color: var(--waldgruen); border: 1.5px solid var(--salbei-border); }
         .btn-outline:hover { background: white; transform: translateY(-2px); }
+        .history-button { background: rgba(255, 255, 255, 0.38); border: 1px solid rgba(255, 255, 255, 0.8); color: var(--waldgruen); box-shadow: 0 5px 18px rgba(27, 59, 43, 0.08); }
+        .history-button:disabled { opacity: 0.42; cursor: not-allowed; transform: none; box-shadow: none; }
 
         .config-bar {
             background: var(--creme-card);
@@ -74,11 +90,30 @@
             box-shadow: var(--shadow-soft);
         }
         .config-bar input { flex: 1; min-width: 240px; padding: 10px 14px; border-radius: 12px; border: 1.5px solid var(--salbei-border); background: white; }
+        .config-bar label { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; }
+        .pantry-bar { background: rgba(253, 251, 247, 0.62); border: 1px solid var(--salbei-border); border-radius: 16px; padding: 14px 18px; margin-top: -12px; margin-bottom: 24px; }
+        .pantry-form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .pantry-form input { flex: 1; min-width: 220px; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--salbei-border); background: white; font: inherit; }
+        .pantry-items { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .pantry-item { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border-radius: 999px; background: rgba(142, 178, 145, 0.2); color: var(--waldgruen); font-size: 0.82rem; font-weight: 700; }
+        .pantry-item button { border: 0; background: transparent; color: var(--terrakotta); cursor: pointer; font-size: 1rem; line-height: 1; padding: 0; }
+        .shopping-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; padding: 14px 16px; background: rgba(253, 251, 247, 0.62); border-radius: 12px; border: 1px solid var(--salbei-border); }
+        .shopping-controls select { padding: 9px 12px; border: 1.5px solid var(--salbei-border); border-radius: 9px; background: white; font: inherit; color: var(--text-dark); }
+        .shopping-group { margin-bottom: 26px; }
+        .shopping-group h4 { color: var(--waldgruen); margin-bottom: 10px; }
+        .meal-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--salbei-border); }
+        .day-nutrition { display: flex; gap: 8px; flex-wrap: wrap; margin: -10px 0 18px; }
+        .nutrition-chip { padding: 7px 10px; border-radius: 9px; background: rgba(142, 178, 145, 0.18); color: var(--waldgruen); font-size: 0.8rem; font-weight: 700; }
+
+        .overview { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+        .stat-card { background: rgba(253, 251, 247, 0.72); border: 1px solid var(--glass-border); border-radius: 16px; padding: 17px 18px; box-shadow: var(--shadow-soft); }
+        .stat-card strong { display: block; color: var(--waldgruen); font-size: 1.45rem; margin-top: 4px; }
+        .stat-card p { color: var(--text-muted); font-size: 0.8rem; }
 
         .nav-pills { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 28px; }
         .nav-pill {
             background: var(--creme-card); backdrop-filter: blur(12px); border: 1.5px solid var(--glass-border);
-            padding: 10px 20px; border-radius: 30px; font-weight: 700; font-size: 0.88rem;
+            padding: 10px 18px; border-radius: 12px; font-weight: 700; font-size: 0.88rem;
             color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: all 0.25s;
         }
         .nav-pill.active { background: var(--waldgruen); color: white; border-color: var(--waldgruen); }
@@ -95,6 +130,7 @@
             cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .day-card:hover { transform: translateY(-6px); border-color: var(--terrakotta); }
+        .day-card:focus-visible { transform: translateY(-3px); border-color: var(--terrakotta); }
         .day-card-header { font-size: 1.35rem; font-weight: 800; color: var(--waldgruen); border-bottom: 1.5px solid var(--salbei-border); padding-bottom: 10px; margin-bottom: 14px; }
 
         .meal-item { font-size: 0.9rem; margin-bottom: 10px; color: var(--text-dark); }
@@ -105,7 +141,12 @@
             border-radius: var(--radius-lg); padding: 28px; margin-bottom: 24px; box-shadow: var(--shadow-soft);
             display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
         }
-        @media(max-width: 768px) { .detail-card { grid-template-columns: 1fr; } }
+        .empty-state { background: rgba(253, 251, 247, 0.55); border: 1px dashed var(--salbei-border); border-radius: 16px; padding: 28px; color: var(--text-muted); }
+        .shopping-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--creme-card); margin-bottom: 8px; border-radius: 12px; border: 1px solid var(--glass-border); font-size: 0.95rem; }
+        .shopping-item input { width: 18px; height: 18px; accent-color: var(--waldgruen); }
+        .shopping-item.checked { opacity: 0.55; text-decoration: line-through; }
+        @media(max-width: 820px) { .overview { grid-template-columns: repeat(2, 1fr); } header { align-items: flex-start; } }
+        @media(max-width: 520px) { body { padding: 14px 12px 40px; } header, .config-bar, .detail-card, .day-card { border-radius: 16px; } header { padding: 20px; } header > div:last-child { width: 100%; } header .btn { flex: 1; } .overview { grid-template-columns: 1fr 1fr; } .config-bar input { min-width: 100%; } .dashboard-grid { grid-template-columns: 1fr; } }
 
         .loading-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -118,53 +159,143 @@
             animation: spin 0.9s linear infinite; margin-bottom: 16px;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .dialog-backdrop { position: fixed; inset: 0; display: none; place-items: center; padding: 20px; background: rgba(27, 59, 43, 0.35); backdrop-filter: blur(8px); z-index: 10000; }
+        .dialog-backdrop.open { display: grid; }
+        .save-dialog { width: min(100%, 420px); background: #fdfbf7; border: 1px solid var(--glass-border); border-radius: 18px; padding: 24px; box-shadow: 0 20px 50px rgba(27, 59, 43, 0.2); }
+        .save-dialog h2 { color: var(--waldgruen); font-size: 1.25rem; margin-bottom: 8px; }
+        .save-dialog p { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 16px; }
+        .save-dialog input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--salbei-border); border-radius: 10px; font: inherit; }
+        .dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+        .preference-dialog { width: min(100%, 640px); max-height: min(90vh, 760px); overflow-y: auto; background: rgba(253, 251, 247, 0.92); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); border: 1px solid var(--glass-border); border-radius: 22px; padding: 28px; box-shadow: 0 24px 70px rgba(27, 59, 43, 0.24); }
+        .preference-dialog h2 { color: var(--waldgruen); font-size: 1.45rem; margin-bottom: 6px; }
+        .preference-dialog > p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 22px; }
+        .preference-section { border: 0; padding: 0; margin: 0 0 22px; }
+        .preference-section legend { color: var(--waldgruen); font-weight: 800; margin-bottom: 10px; }
+        .preference-options { display: flex; flex-wrap: wrap; gap: 9px; }
+        .preference-option { display: inline-flex; align-items: center; gap: 7px; padding: 9px 12px; border: 1px solid var(--salbei-border); border-radius: 11px; background: rgba(255, 255, 255, 0.52); color: var(--text-dark); font-size: 0.87rem; cursor: pointer; }
+        .preference-option:has(input:checked) { background: rgba(142, 178, 145, 0.25); border-color: var(--waldgruen); color: var(--waldgruen); font-weight: 700; }
+        .preference-option input { accent-color: var(--waldgruen); }
+        .preference-dialog textarea { width: 100%; min-height: 92px; resize: vertical; padding: 12px 14px; border: 1.5px solid var(--salbei-border); border-radius: 10px; background: rgba(255, 255, 255, 0.72); font: inherit; color: var(--text-dark); }
+        .preference-dialog textarea:focus { border-color: var(--terrakotta); outline: 0; }
+        .archive-entry { background: var(--creme-card); border: 1px solid var(--glass-border); padding: 16px 20px; border-radius: 16px; margin-bottom: 12px; }
+        .archive-entry-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .archive-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .archive-preview { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--salbei-border); }
+        .archive-preview.open { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+        .archive-day { padding: 12px; background: rgba(255,255,255,0.45); border-radius: 10px; }
+        .archive-day h5 { color: var(--waldgruen); font-size: 0.95rem; margin-bottom: 8px; }
+        .archive-meal { color: var(--text-muted); font-size: 0.8rem; margin-top: 5px; }
+        .archive-meal b { display: block; color: var(--terrakotta); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.4px; }
     </style>
 </head>
 <body>
 
 <div class="loading-overlay" id="loadingScreen">
     <div class="spinner"></div>
-    <h2 style="color: var(--waldgruen);">✨ KI generiert euren Wochenplan...</h2>
+    <h2 style="color: var(--waldgruen);">KI generiert euren Wochenplan...</h2>
     <p style="color: var(--text-muted); margin-top: 6px;">Optimiert für Bioverfügbarkeit & Vorratskammer (ohne rohe Tomaten)</p>
+</div>
+<div class="dialog-backdrop" id="saveDialog" role="dialog" aria-modal="true" aria-labelledby="saveDialogTitle">
+    <form class="save-dialog" onsubmit="confirmArchive(event)">
+        <h2 id="saveDialogTitle">Woche im Archiv speichern</h2>
+        <p>Gib deiner aktuellen Planung einen Namen.</p>
+        <label class="eyebrow" for="archiveTitleInput">Name</label>
+        <input id="archiveTitleInput" required maxlength="80" autocomplete="off">
+        <div class="dialog-actions"><button type="button" class="btn btn-outline" onclick="closeArchiveDialog()">Abbrechen</button><button type="submit" class="btn">Speichern</button></div>
+    </form>
+</div>
+<div class="dialog-backdrop" id="preferencesDialog" role="dialog" aria-modal="true" aria-labelledby="preferencesDialogTitle">
+    <form class="preference-dialog" onsubmit="savePreferences(event)">
+        <h2 id="preferencesDialogTitle">⚙️ Meine Präferenzen</h2>
+        <p>Diese Regeln werden bei der nächsten KI-Generierung verbindlich berücksichtigt.</p>
+        <fieldset class="preference-section">
+            <legend>Ernährungsform</legend>
+            <div class="preference-options">
+                <label class="preference-option"><input type="radio" name="dietaryForm" value="vegan" checked> Vegan</label>
+                <label class="preference-option"><input type="radio" name="dietaryForm" value="vegetarisch"> Vegetarisch</label>
+                <label class="preference-option"><input type="radio" name="dietaryForm" value="allesesser"> Allesesser</label>
+            </div>
+        </fieldset>
+        <fieldset class="preference-section">
+            <legend>Ausschluss-Filter</legend>
+            <div class="preference-options">
+                <label class="preference-option"><input type="checkbox" name="exclusions" value="Rohe Tomaten"> Rohe Tomaten</label>
+                <label class="preference-option"><input type="checkbox" name="exclusions" value="Fisch und Meeresfrüchte"> Fisch/Meeresfrüchte</label>
+                <label class="preference-option"><input type="checkbox" name="exclusions" value="Nüsse"> Nüsse</label>
+                <label class="preference-option"><input type="checkbox" name="exclusions" value="Soja"> Soja</label>
+                <label class="preference-option"><input type="checkbox" name="exclusions" value="Gluten"> Gluten</label>
+                <label class="preference-option"><input type="checkbox" name="exclusions" value="Pilze"> Pilze</label>
+            </div>
+        </fieldset>
+        <div class="preference-section">
+            <label class="eyebrow" for="cuisinePreferences">Cuisines / Küchenrichtungen</label>
+            <textarea id="cuisinePreferences" placeholder="z. B. Indisch ausklammern, Koriander meiden, Asiatisch bevorzugen"></textarea>
+        </div>
+        <div class="preference-section">
+            <label class="eyebrow" for="additionalPreferences">Weitere Wünsche oder Vermeidungen</label>
+            <textarea id="additionalPreferences" placeholder="z. B. schnell kochbar, wenig scharf, saisonale Zutaten"></textarea>
+        </div>
+        <div class="dialog-actions"><button type="button" class="btn btn-outline" onclick="closePreferences()">Abbrechen</button><button type="submit" class="btn">Präferenzen speichern</button></div>
+    </form>
 </div>
 
 <div class="container">
     <header>
         <div class="brand">
-            <h1>🌱 NutriCraft Studio</h1>
-            <p>Dein KI-Vegan-Dashboard (Soft Glassmorphism)</p>
+            <div class="brand-lockup">
+                <div class="meal-mark" aria-label="Animierte vegane Bowl" role="img"><span class="meal-leaf"></span><span class="meal-fork"></span><span class="meal-bowl"></span></div>
+                <div><h1>NutriCraft Studio</h1>
+                <p>Dein veganer Wochenplan, übersichtlich organisiert</p></div>
+            </div>
         </div>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button class="btn btn-outline" onclick="showPage('dashboard')">🏠 Dashboard</button>
-            <button class="btn btn-outline" onclick="showPage('Einkaufsliste')">🛒 Einkaufsliste</button>
-            <button class="btn btn-outline" onclick="showPage('Archiv')">📜 Wochen-Archiv</button>
-            <button class="btn" onclick="generateKiPlan()">✨ KI-Woche generieren</button>
+            <button class="btn btn-outline" onclick="showPage('dashboard')">Dashboard</button>
+            <button class="btn btn-outline" onclick="showPage('Einkaufsliste')">Einkaufsliste</button>
+            <button class="btn btn-outline" onclick="showPage('Archiv')">Archiv</button>
+            <button class="btn btn-outline" onclick="openPreferences()">⚙️ Präferenzen</button>
+            <button class="btn history-button" id="undoButton" onclick="undoPlan()" disabled title="Zum vorherigen Wochenplan wechseln">↩️ Rückgängig (Undo)</button>
+            <button class="btn history-button" id="redoButton" onclick="redoPlan()" disabled title="Zum nächsten Wochenplan wechseln">↪️ Wiederherstellen (Redo)</button>
+            <button class="btn" onclick="generateKiPlan()">KI-Woche generieren</button>
         </div>
     </header>
 
     <div class="config-bar">
-        <span>🔑 <b>Gemini Key:</b></span>
-        <input type="password" id="apiKeyInput" placeholder="Kostenlosen Key eintragen..." onchange="saveApiKey()">
-        <button class="btn btn-outline" style="padding: 8px 14px; font-size: 0.82rem;" onclick="archiveCurrentWeek()">📥 Aktuelle Woche speichern</button>
+        <span class="eyebrow">KI-Verbindung</span>
+        <span style="color:var(--text-muted); font-size:0.88rem;">Sicher über dein lokales Backend</span>
+        <button class="btn btn-outline" style="padding: 8px 14px; font-size: 0.82rem;" onclick="archiveCurrentWeek()">Woche speichern</button>
     </div>
+    <section class="pantry-bar" aria-labelledby="pantry-title">
+        <div class="pantry-form"><span class="eyebrow" id="pantry-title">Schon zu Hause</span><input id="pantryInput" placeholder="z. B. Olivenöl, Salz, Gewürze" onkeydown="if(event.key === 'Enter') addPantryItem()"><button class="btn btn-outline" type="button" onclick="addPantryItem()">Hinzufügen</button></div>
+        <div class="pantry-items" id="pantryItems" aria-live="polite"></div>
+    </section>
+    <section class="pantry-bar" aria-labelledby="use-soon-title">
+        <div class="pantry-form"><span class="eyebrow" id="use-soon-title">Bald verbrauchen</span><input id="useSoonInput" placeholder="z. B. Zucchini, Pilze, Tofu" onkeydown="if(event.key === 'Enter') addUseSoonItem()"><button class="btn btn-outline" type="button" onclick="addUseSoonItem()">Hinzufügen</button></div>
+        <div class="pantry-items" id="useSoonItems" aria-live="polite"></div>
+    </section>
 
     <div class="nav-pills">
-        <div class="nav-pill active" onclick="showPage('dashboard')">🏠 Dashboard</div>
-        <div class="nav-pill" onclick="showPage('Montag')">Montag</div>
-        <div class="nav-pill" onclick="showPage('Dienstag')">Dienstag</div>
-        <div class="nav-pill" onclick="showPage('Mittwoch')">Mittwoch</div>
-        <div class="nav-pill" onclick="showPage('Donnerstag')">Donnerstag</div>
-        <div class="nav-pill" onclick="showPage('Freitag')">Freitag</div>
-        <div class="nav-pill" onclick="showPage('Samstag')">Samstag</div>
-        <div class="nav-pill" onclick="showPage('Sonntag')">Sonntag</div>
-        <div class="nav-pill" onclick="showPage('Einkaufsliste')">🛒 Einkaufsliste</div>
-        <div class="nav-pill" onclick="showPage('Archiv')">📜 Archiv</div>
+        <button class="nav-pill active" onclick="showPage('dashboard')">Dashboard</button>
+        <button class="nav-pill" onclick="showPage('Montag')">Montag</button>
+        <button class="nav-pill" onclick="showPage('Dienstag')">Dienstag</button>
+        <button class="nav-pill" onclick="showPage('Mittwoch')">Mittwoch</button>
+        <button class="nav-pill" onclick="showPage('Donnerstag')">Donnerstag</button>
+        <button class="nav-pill" onclick="showPage('Freitag')">Freitag</button>
+        <button class="nav-pill" onclick="showPage('Samstag')">Samstag</button>
+        <button class="nav-pill" onclick="showPage('Sonntag')">Sonntag</button>
+        <button class="nav-pill" onclick="showPage('Einkaufsliste')">Einkaufsliste</button>
+        <button class="nav-pill" onclick="showPage('Archiv')">Archiv</button>
     </div>
 
+    <section class="overview" aria-label="Wochenübersicht">
+        <div class="stat-card"><span class="eyebrow">Diese Woche</span><strong id="weekSummary">Dein Plan ist bereit</strong><p>Vier Mahlzeiten pro Tag</p></div>
+        <div class="stat-card"><p>Ø Kalorien / Tag</p><strong id="calorieStat">–</strong></div>
+        <div class="stat-card"><p>Ø Protein / Tag</p><strong id="proteinStat">–</strong></div>
+        <div class="stat-card"><p>Einkaufsartikel</p><strong id="itemStat">–</strong></div>
+    </section>
     <div id="page-dashboard" class="page active"><div class="dashboard-grid" id="dashboardGrid"></div></div>
     <div id="dayPagesContainer"></div>
-    <div id="page-Einkaufsliste" class="page"><h3 style="color: var(--waldgruen); margin-bottom: 16px;">🛒 Einkaufsliste</h3><ul id="shoppingListUl" style="list-style: none;"></ul></div>
-    <div id="page-Archiv" class="page"><h3 style="color: var(--waldgruen); margin-bottom: 16px;">📜 Wochen-Archiv</h3><div id="archiveContainer"></div></div>
+    <div id="page-Einkaufsliste" class="page"><h3 style="color: var(--waldgruen); margin-bottom: 16px;">Einkaufsliste</h3><div class="shopping-controls"><label for="shoppingSplitDay">Zweiter Einkauf ab</label><select id="shoppingSplitDay" onchange="saveShoppingSplit()"><option value="Donnerstag">Donnerstag</option><option value="Mittwoch">Mittwoch</option><option value="Freitag">Freitag</option><option value="Samstag">Samstag</option></select></div><div id="shoppingListUl"></div></div>
+    <div id="page-Archiv" class="page"><h3 style="color: var(--waldgruen); margin-bottom: 16px;">Wochen-Archiv</h3><div id="archiveContainer"></div></div>
 </div>
 
 <script>
@@ -181,24 +312,114 @@
     };
     DAYS.forEach(d => { if(!DEFAULT_PLAN[d]) DEFAULT_PLAN[d] = JSON.parse(JSON.stringify(DEFAULT_PLAN["Montag"])); });
 
+    const PLAN_HISTORY_KEY = 'nutri_plan_history';
+    const PLAN_HISTORY_INDEX_KEY = 'nutri_plan_history_index';
+    const MAX_PLAN_HISTORY = 15;
     let currentPlan = JSON.parse(localStorage.getItem('nutri_current_plan')) || DEFAULT_PLAN;
+    let planHistory = JSON.parse(localStorage.getItem(PLAN_HISTORY_KEY) || 'null');
+    let historyIndex = Number.parseInt(localStorage.getItem(PLAN_HISTORY_INDEX_KEY) || '', 10);
+    if (!Array.isArray(planHistory) || !planHistory.length) {
+        planHistory = [JSON.parse(JSON.stringify(currentPlan))];
+        historyIndex = 0;
+    } else {
+        if (planHistory.length > MAX_PLAN_HISTORY) {
+            const removedVersions = planHistory.length - MAX_PLAN_HISTORY;
+            planHistory = planHistory.slice(-MAX_PLAN_HISTORY);
+            historyIndex -= removedVersions;
+        }
+        historyIndex = Number.isInteger(historyIndex) ? historyIndex : planHistory.length - 1;
+        historyIndex = Math.max(0, Math.min(historyIndex, planHistory.length - 1));
+        currentPlan = JSON.parse(JSON.stringify(planHistory[historyIndex]));
+    }
     let archive = JSON.parse(localStorage.getItem('nutri_archive')) || [];
+    let pantryItems = JSON.parse(localStorage.getItem('nutri_pantry_items') || '[]');
+    let useSoonItems = JSON.parse(localStorage.getItem('nutri_use_soon_items') || '[]');
+    let shoppingSplitDay = localStorage.getItem('nutri_shopping_split_day') || 'Donnerstag';
+    let preferences = JSON.parse(localStorage.getItem('nutri_preferences') || 'null') || { dietaryForm: 'vegan', exclusions: [], cuisinePreferences: '', additionalPreferences: '' };
 
     function init() {
-        document.getElementById('apiKeyInput').value = localStorage.getItem('nutri_gemini_key') || '';
+        savePlanState();
         renderDashboard();
         renderPages();
         renderShoppingList();
         renderArchive();
+        renderPantryItems();
+        renderUseSoonItems();
+        document.getElementById('shoppingSplitDay').value = shoppingSplitDay;
+        updateStats();
+        updateHistoryButtons();
     }
 
-    function saveApiKey() { localStorage.setItem('nutri_gemini_key', document.getElementById('apiKeyInput').value.trim()); }
+    function savePlanState() {
+        localStorage.setItem('nutri_current_plan', JSON.stringify(currentPlan));
+        localStorage.setItem(PLAN_HISTORY_KEY, JSON.stringify(planHistory));
+        localStorage.setItem(PLAN_HISTORY_INDEX_KEY, String(historyIndex));
+    }
+
+    function openPreferences() {
+        document.querySelector(`input[name="dietaryForm"][value="${preferences.dietaryForm || 'vegan'}"]`).checked = true;
+        document.querySelectorAll('input[name="exclusions"]').forEach(input => { input.checked = (preferences.exclusions || []).includes(input.value); });
+        document.getElementById('cuisinePreferences').value = preferences.cuisinePreferences || '';
+        document.getElementById('additionalPreferences').value = preferences.additionalPreferences || '';
+        document.getElementById('preferencesDialog').classList.add('open');
+    }
+
+    function closePreferences() {
+        document.getElementById('preferencesDialog').classList.remove('open');
+    }
+
+    function savePreferences(event) {
+        event.preventDefault();
+        preferences = {
+            dietaryForm: document.querySelector('input[name="dietaryForm"]:checked').value,
+            exclusions: [...document.querySelectorAll('input[name="exclusions"]:checked')].map(input => input.value),
+            cuisinePreferences: document.getElementById('cuisinePreferences').value.trim(),
+            additionalPreferences: document.getElementById('additionalPreferences').value.trim()
+        };
+        localStorage.setItem('nutri_preferences', JSON.stringify(preferences));
+        closePreferences();
+    }
+
+    function renderCurrentPlan() {
+        savePlanState();
+        renderDashboard(); renderPages(); renderShoppingList(); updateStats();
+        updateHistoryButtons();
+    }
+
+    function updateHistoryButtons() {
+        document.getElementById('undoButton').disabled = historyIndex <= 0;
+        document.getElementById('redoButton').disabled = historyIndex >= planHistory.length - 1;
+    }
+
+    function recordPlanVersion(nextPlan) {
+        planHistory = planHistory.slice(0, historyIndex + 1);
+        planHistory.push(JSON.parse(JSON.stringify(nextPlan)));
+        if (planHistory.length > MAX_PLAN_HISTORY) planHistory.shift();
+        historyIndex = planHistory.length - 1;
+        currentPlan = JSON.parse(JSON.stringify(planHistory[historyIndex]));
+        renderCurrentPlan();
+    }
+
+    function restorePlanVersion(index) {
+        if (index < 0 || index >= planHistory.length) return;
+        historyIndex = index;
+        currentPlan = JSON.parse(JSON.stringify(planHistory[historyIndex]));
+        renderCurrentPlan();
+    }
+
+    function undoPlan() {
+        restorePlanVersion(historyIndex - 1);
+    }
+
+    function redoPlan() {
+        restorePlanVersion(historyIndex + 1);
+    }
 
     function renderDashboard() {
         const grid = document.getElementById('dashboardGrid'); grid.innerHTML = '';
         DAYS.forEach(day => {
             const card = document.createElement('div'); card.className = 'day-card'; card.onclick = () => showPage(day);
-            let previews = MEAL_TYPES.map(t => `<div class="meal-item"><b>${t}</b>${currentPlan[day]?.[t]?.name || 'Gericht'}</div>`).join('');
+            let previews = MEAL_TYPES.map(t => `<div class="meal-item"><b>${escapeHtml(t)}</b>${escapeHtml(currentPlan[day]?.[t]?.name || 'Gericht')}</div>`).join('');
             card.innerHTML = `<div class="day-card-header">${day}</div>${previews}`;
             grid.appendChild(card);
         });
@@ -208,26 +429,31 @@
         const container = document.getElementById('dayPagesContainer'); container.innerHTML = '';
         DAYS.forEach(day => {
             const pageDiv = document.createElement('div'); pageDiv.id = `page-${day}`; pageDiv.className = 'page';
-            let html = `<h2 style="color:var(--waldgruen); margin-bottom:20px;">📅 ${day} Tagesübersicht</h2>`;
+            const dayMeals = MEAL_TYPES.map(type => currentPlan[day]?.[type]).filter(Boolean);
+            const dayCalories = dayMeals.reduce((sum, meal) => sum + (Number(meal.calories) || 0), 0);
+            const dayProtein = dayMeals.reduce((sum, meal) => sum + (Number(meal.protein) || 0), 0);
+            let html = `<h2 style="color:var(--waldgruen); margin-bottom:14px;">${escapeHtml(day)} Tagesübersicht</h2><div class="day-nutrition"><span class="nutrition-chip">${dayCalories} kcal gesamt</span><span class="nutrition-chip">${dayProtein} g Protein gesamt</span><span class="nutrition-chip">${dayMeals.length} Mahlzeiten</span></div>`;
             MEAL_TYPES.forEach(type => {
                 let meal = currentPlan[day]?.[type];
                 if (!meal) return;
                 html += `
                     <div class="detail-card">
                         <div>
-                            <span style="background:var(--terrakotta); color:white; padding:4px 10px; border-radius:8px; font-weight:bold; font-size:0.8rem;">${type}</span>
-                            <h3 style="color:var(--waldgruen); margin-top:10px;">${meal.name}</h3>
-                            <p style="margin-top:10px; font-size:0.9rem;"><b>Gerät:</b> ${meal.device}</p>
-                            <p style="margin-top:6px; font-size:0.85rem; color:#0288d1;">🧪 <b>Bioverfügbarkeit:</b> ${meal.bio}</p>
+                            <span style="background:var(--terrakotta); color:white; padding:4px 10px; border-radius:8px; font-weight:bold; font-size:0.8rem;">${escapeHtml(type)}</span>
+                            <h3 style="color:var(--waldgruen); margin-top:10px;">${escapeHtml(meal.name)}</h3>
+                            <p style="margin-top:10px; font-size:0.9rem;"><b>Gerät:</b> ${escapeHtml(meal.device || '–')}</p>
+                            <p style="margin-top:6px; font-size:0.9rem;"><b>Nährwerte:</b> ${meal.calories || '–'} kcal · ${meal.protein || '–'} g Protein</p>
+                            <p style="margin-top:6px; font-size:0.85rem; color:#0288d1;">🧪 <b>Bioverfügbarkeit:</b> ${escapeHtml(meal.bio || '–')}</p>
                         </div>
                         <div>
                             <h4>🛒 Zutaten (2 Personen):</h4>
                             <ul style="margin-top:6px; margin-bottom:12px; list-style:none;">
-                                ${(meal.ingredients || []).map(i => `<li style="padding:3px 0; border-bottom:1px dashed var(--salbei-border); font-size:0.9rem;">• <b>${i.amount} ${i.unit}</b>${i.item}</li>`).join('')}
+                                ${(meal.ingredients || []).map(i => `<li style="padding:3px 0; border-bottom:1px dashed var(--salbei-border); font-size:0.9rem;">• <b>${escapeHtml(i.amount)} ${escapeHtml(i.unit)}</b>${escapeHtml(i.item)}</li>`).join('')}
                             </ul>
                             <h4>👩‍🍳 Zubereitung:</h4>
-                            <p style="margin-top:4px; font-size:0.9rem; line-height:1.4;">${meal.instructions}</p>
+                            <p style="margin-top:4px; font-size:0.9rem; line-height:1.4;">${escapeHtml(meal.instructions || '–')}</p>
                         </div>
+                        <div class="meal-actions"><span style="color:var(--text-muted); font-size:0.8rem;">Passt nicht?</span><button class="btn btn-outline" style="padding:8px 12px; font-size:0.8rem;" onclick="regenerateMeal('${day}', '${type}')">Mahlzeit neu laden</button></div>
                     </div>
                 `;
             });
@@ -236,43 +462,179 @@
     }
 
     function renderShoppingList() {
-        const ul = document.getElementById('shoppingListUl'); ul.innerHTML = '';
-        let totals = {};
-        DAYS.forEach(d => MEAL_TYPES.forEach(t => (currentPlan[d]?.[t]?.ingredients || []).forEach(i => {
-            let key = `${i.item} (${i.unit})`;
-            totals[key] = (totals[key] || 0) + i.amount;
-        })));
-        Object.keys(totals).forEach(k => {
-            ul.innerHTML += `<li style="padding:10px 14px; background:var(--creme-card); margin-bottom:8px; border-radius:12px; border:1px solid var(--glass-border); font-size:0.95rem;"><b>${totals[k]}</b> ${k}</li>`;
+        const container = document.getElementById('shoppingListUl'); container.innerHTML = '';
+        const splitIndex = DAYS.indexOf(shoppingSplitDay);
+        const groups = [DAYS.slice(0, splitIndex), DAYS.slice(splitIndex)];
+        const totalsByGroup = groups.map(days => {
+            const totals = {};
+            days.forEach(day => MEAL_TYPES.forEach(type => (currentPlan[day]?.[type]?.ingredients || []).forEach(ingredient => {
+                if (pantryItems.some(pantryItem => ingredient.item.toLowerCase().includes(pantryItem.toLowerCase()))) return;
+                const key = `${ingredient.item} (${ingredient.unit})`;
+                totals[key] = (totals[key] || 0) + ingredient.amount;
+            })));
+            return totals;
         });
+        const checkedItems = JSON.parse(localStorage.getItem('nutri_checked_items') || '{}');
+        let itemIndex = 0;
+        totalsByGroup.forEach((totals, groupIndex) => {
+            const keys = Object.keys(totals).sort((a, b) => a.localeCompare(b, 'de'));
+            const title = groupIndex === 0 ? `Erster Einkauf · Montag bis ${DAYS[splitIndex - 1]}` : `Zweiter Einkauf · ${shoppingSplitDay} bis Sonntag`;
+            const group = document.createElement('section'); group.className = 'shopping-group';
+            group.innerHTML = `<h4>${escapeHtml(title)}</h4>`;
+            if (!keys.length) group.innerHTML += '<p class="empty-state">Keine neuen Zutaten nötig.</p>';
+            keys.forEach(key => {
+                const checked = checkedItems[key] ? ' checked' : '';
+                group.innerHTML += `<div class="shopping-item${checked}"><input type="checkbox" id="shopping-${itemIndex}" ${checkedItems[key] ? 'checked' : ''} onchange="toggleShoppingItem(this, '${encodeURIComponent(key)}')"><label for="shopping-${itemIndex}"><b>${escapeHtml(totals[key])}</b> ${escapeHtml(key)}</label></div>`;
+                itemIndex++;
+            });
+            container.appendChild(group);
+        });
+        updateStats(itemIndex);
+    }
+
+    function saveShoppingSplit() {
+        shoppingSplitDay = document.getElementById('shoppingSplitDay').value;
+        localStorage.setItem('nutri_shopping_split_day', shoppingSplitDay);
+        renderShoppingList();
+    }
+
+    function addPantryItem() {
+        const input = document.getElementById('pantryInput');
+        const item = input.value.trim();
+        if (!item || pantryItems.some(existing => existing.toLowerCase() === item.toLowerCase())) return;
+        pantryItems.push(item);
+        pantryItems.sort((a, b) => a.localeCompare(b, 'de'));
+        localStorage.setItem('nutri_pantry_items', JSON.stringify(pantryItems));
+        input.value = '';
+        renderPantryItems();
+        renderShoppingList();
+    }
+
+    function addUseSoonItem() {
+        const input = document.getElementById('useSoonInput');
+        const item = input.value.trim();
+        if (!item || useSoonItems.some(existing => existing.toLowerCase() === item.toLowerCase())) return;
+        useSoonItems.push(item);
+        useSoonItems.sort((a, b) => a.localeCompare(b, 'de'));
+        localStorage.setItem('nutri_use_soon_items', JSON.stringify(useSoonItems));
+        input.value = '';
+        renderUseSoonItems();
+    }
+
+    function removeUseSoonItemByIndex(index) {
+        useSoonItems.splice(index, 1);
+        localStorage.setItem('nutri_use_soon_items', JSON.stringify(useSoonItems));
+        renderUseSoonItems();
+    }
+
+    function renderUseSoonItems() {
+        const container = document.getElementById('useSoonItems');
+        container.innerHTML = useSoonItems.length ? useSoonItems.map((item, index) => `<span class="pantry-item">${escapeHtml(item)}<button type="button" aria-label="${escapeHtml(item)} entfernen" onclick="removeUseSoonItemByIndex(${index})">×</button></span>`).join('') : '<span style="color:var(--text-muted); font-size:0.82rem;">Noch keine Zutaten vorgemerkt.</span>';
+    }
+
+    function removePantryItem(item) {
+        pantryItems = pantryItems.filter(existing => existing !== item);
+        localStorage.setItem('nutri_pantry_items', JSON.stringify(pantryItems));
+        renderPantryItems();
+        renderShoppingList();
+    }
+
+    function renderPantryItems() {
+        const container = document.getElementById('pantryItems');
+        container.innerHTML = pantryItems.length ? pantryItems.map((item, index) => `<span class="pantry-item">${escapeHtml(item)}<button type="button" aria-label="${escapeHtml(item)} entfernen" onclick="removePantryItemByIndex(${index})">×</button></span>`).join('') : '<span style="color:var(--text-muted); font-size:0.82rem;">Noch keine Vorräte eingetragen.</span>';
+    }
+
+    function removePantryItemByIndex(index) {
+        pantryItems.splice(index, 1);
+        localStorage.setItem('nutri_pantry_items', JSON.stringify(pantryItems));
+        renderPantryItems();
+        renderShoppingList();
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
+    }
+
+    function toggleShoppingItem(input, key) {
+        key = decodeURIComponent(key);
+        const checkedItems = JSON.parse(localStorage.getItem('nutri_checked_items') || '{}');
+        checkedItems[key] = input.checked;
+        localStorage.setItem('nutri_checked_items', JSON.stringify(checkedItems));
+        input.closest('.shopping-item').classList.toggle('checked', input.checked);
+    }
+
+    function updateStats(itemCount) {
+        let totalCalories = 0; let totalProtein = 0; let mealCount = 0;
+        DAYS.forEach(day => MEAL_TYPES.forEach(type => {
+            const meal = currentPlan[day]?.[type];
+            if (meal) {
+                totalCalories += Number(meal.calories) || 0;
+                totalProtein += Number(meal.protein) || 0;
+                mealCount++;
+            }
+        }));
+        document.getElementById('calorieStat').textContent = mealCount ? `${Math.round(totalCalories / DAYS.length)} kcal` : '–';
+        document.getElementById('proteinStat').textContent = mealCount ? `${Math.round(totalProtein / DAYS.length)} g` : '–';
+        document.getElementById('itemStat').textContent = itemCount ?? document.querySelectorAll('.shopping-item').length;
     }
 
     function archiveCurrentWeek() {
-        let title = prompt("Name für diese Woche:", `Woche vom ${new Date().toLocaleDateString('de-DE')}`);
+        const dialog = document.getElementById('saveDialog');
+        const input = document.getElementById('archiveTitleInput');
+        input.value = `Woche vom ${new Date().toLocaleDateString('de-DE')}`;
+        dialog.classList.add('open');
+        input.focus();
+    }
+
+    function closeArchiveDialog() {
+        document.getElementById('saveDialog').classList.remove('open');
+    }
+
+    function confirmArchive(event) {
+        event.preventDefault();
+        const title = document.getElementById('archiveTitleInput').value.trim();
         if (!title) return;
         archive.push({ id: Date.now(), title: title, plan: JSON.parse(JSON.stringify(currentPlan)) });
         localStorage.setItem('nutri_archive', JSON.stringify(archive));
         renderArchive();
-        alert(`📜 "${title}" im Archiv gespeichert!`);
+        closeArchiveDialog();
+        showPage('Archiv');
     }
 
     function renderArchive() {
         const container = document.getElementById('archiveContainer');
         container.innerHTML = archive.length === 0 ? '<p style="color:var(--text-muted);">Noch keine Pläne gespeichert.</p>' :
             archive.map(item => `
-                <div style="background:var(--creme-card); border:1px solid var(--glass-border); padding:16px 20px; border-radius:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
-                    <div><h4 style="color:var(--waldgruen);">${item.title}</h4></div>
-                    <button class="btn btn-outline" onclick="loadArchivedPlan(${item.id})">🔄 Laden</button>
+                <div class="archive-entry">
+                    <div class="archive-entry-head"><h4 style="color:var(--waldgruen);">${escapeHtml(item.title)}</h4><div class="archive-actions"><button class="btn btn-outline" onclick="toggleArchiveDetails(${item.id})">Ansehen</button><button class="btn" onclick="loadArchivedPlan(${item.id})">Laden</button></div></div>
+                    <div class="archive-preview" id="archive-preview-${item.id}"></div>
                 </div>
             `).join('');
+    }
+
+    function toggleArchiveDetails(id) {
+        const preview = document.getElementById(`archive-preview-${id}`);
+        if (preview.classList.contains('open')) {
+            preview.classList.remove('open');
+            return;
+        }
+        const item = archive.find(archived => archived.id === id);
+        if (!item) return;
+        preview.innerHTML = DAYS.map(day => {
+            const meals = MEAL_TYPES.map(type => {
+                const meal = item.plan?.[day]?.[type];
+                return meal ? `<div class="archive-meal"><b>${escapeHtml(type)}</b>${escapeHtml(meal.name)}</div>` : '';
+            }).join('');
+            return `<div class="archive-day"><h5>${day}</h5>${meals || '<span style="color:var(--text-muted);">Keine Mahlzeiten</span>'}</div>`;
+        }).join('');
+        preview.classList.add('open');
     }
 
     function loadArchivedPlan(id) {
         let found = archive.find(a => a.id === id);
         if (found) {
-            currentPlan = JSON.parse(JSON.stringify(found.plan));
-            localStorage.setItem('nutri_current_plan', JSON.stringify(currentPlan));
-            renderDashboard(); renderPages(); renderShoppingList(); showPage('dashboard');
+            recordPlanVersion(found.plan);
+            showPage('dashboard');
         }
     }
 
@@ -285,47 +647,42 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    async function generateKiPlan() {
-        let key = localStorage.getItem('nutri_gemini_key');
-        if (!key) { alert("Bitte trage zuerst oben deinen Gemini Key ein!"); return; }
-
-        document.getElementById('loadingScreen').style.display = 'flex';
-
-        const promptText = `Erstelle einen veganen 7-Tage-Ernährungsplan (Montag bis Sonntag) für 2 Personen.
-        Mahlzeiten: Frühstück, Mittagessen, Abendessen, Snack.
-        Regeln: Keine rohen Tomaten. Hohe Bioverfügbarkeit (Eisen, Vitamin C).
-        Antworte ausschließlich im JSON-Format mit dieser Struktur:
-        {
-          "Montag": {
-            "Frühstück": {"name": "...", "device": "...", "bio": "...", "calories": 400, "protein": 20, "ingredients": [{"item": "...", "amount": 100, "unit": "g"}], "instructions": "..."},
-            "Mittagessen": {"name": "...", "device": "...", "bio": "...", "calories": 500, "protein": 25, "ingredients": [{"item": "...", "amount": 100, "unit": "g"}], "instructions": "..."},
-            "Abendessen": {"name": "...", "device": "...", "bio": "...", "calories": 500, "protein": 25, "ingredients": [{"item": "...", "amount": 100, "unit": "g"}], "instructions": "..."},
-            "Snack": {"name": "...", "device": "...", "bio": "...", "calories": 200, "protein": 10, "ingredients": [{"item": "...", "amount": 50, "unit": "g"}], "instructions": "..."}
-          },
-          "Dienstag": {...}, "Mittwoch": {...}, "Donnerstag": {...}, "Freitag": {...}, "Samstag": {...}, "Sonntag": {...}
-        }`;
-
+    async function regenerateMeal(day, mealType) {
+        const loading = document.getElementById('loadingScreen');
+        loading.style.display = 'flex';
         try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
+            const response = await fetch('/api/generate-meal', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: promptText }] }],
-                    generationConfig: { responseMimeType: "application/json" }
-                })
+                body: JSON.stringify({ day: day, mealType: mealType, pantry: pantryItems, useSoon: useSoonItems, preferences: preferences })
             });
+            const data = await response.json();
+            if (!response.ok || data.error) throw new Error(data.error || 'Einzelne Mahlzeit konnte nicht geladen werden.');
+            const nextPlan = JSON.parse(JSON.stringify(currentPlan));
+            nextPlan[day][mealType] = data;
+            recordPlanVersion(nextPlan);
+            showPage(day);
+        } catch (error) {
+            alert(`Mahlzeit konnte nicht neu geladen werden: ${error.message}`);
+        } finally {
+            loading.style.display = 'none';
+        }
+    }
+
+    async function generateKiPlan() {
+        document.getElementById('loadingScreen').style.display = 'flex';
+
+        try {
+                        const response = await fetch('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pantry: pantryItems, useSoon: useSoonItems, preferences: preferences }) });
 
             const data = await response.json();
-            if (data.error) throw new Error(data.error.message);
+                        if (!response.ok || data.error) throw new Error(data.error || 'Backend-Anfrage fehlgeschlagen.');
 
-            let rawText = data.candidates[0].content.parts[0].text;
-            currentPlan = JSON.parse(rawText);
-            localStorage.setItem('nutri_current_plan', JSON.stringify(currentPlan));
-            
-            renderDashboard(); renderPages(); renderShoppingList(); showPage('dashboard');
+                        recordPlanVersion(data);
+            showPage('dashboard');
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
         } catch (e) {
-            alert("Fehler bei der KI-Generierung: " + e.message + "\n\nPrüfe deinen Key im Google AI Studio!");
+            alert("Fehler bei der KI-Generierung: " + e.message + "\n\nPrüfe GEMINI_API_KEY im Backend-Terminal.");
         } finally {
             document.getElementById('loadingScreen').style.display = 'none';
         }
